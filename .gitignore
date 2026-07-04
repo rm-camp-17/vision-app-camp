@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.xcresult
+
+# Bundled media is generated (placeholders) or delivered (real footage);
+# either way it is too heavy for git. The folder READMEs stay tracked so
+# the folder references always resolve.
+CampExperts/Resources/CampMedia/**/*.mov
+CampExperts/Resources/CampMedia/**/*.aivu
+CampExperts/Resources/CampMedia/**/*.mp4
+CampExperts/Resources/Audio/*.m4a
+CampExperts/Resources/Audio/*.caf
+CampExperts/Resources/Audio/*.wav

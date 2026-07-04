@@ -1,0 +1,37 @@
+# XcodeGen spec — a safety net, not the source of truth.
+#
+# The checked-in CampExperts.xcodeproj is hand-maintained and ready to open.
+# If it ever drifts or you prefer generated projects, install XcodeGen
+# (`brew install xcodegen`) and run `xcodegen generate` here to rebuild an
+# equivalent project file.
+
+name: CampExperts
+options:
+  deploymentTarget:
+    visionOS: "26.0"
+  createIntermediateGroups: true
+
+targets:
+  CampExperts:
+    type: application
+    platform: visionOS
+    sources:
+      - path: CampExperts
+        excludes:
+          - "Info.plist"
+          - "Resources/**"
+      - path: CampExperts/Resources/CampMedia
+        type: folder
+        buildPhase: resources
+      - path: CampExperts/Resources/Audio
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: CampExperts/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.campexperts.threshold
+        SUPPORTED_PLATFORMS: "xros xrsimulator"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: 7
+        XROS_DEPLOYMENT_TARGET: "26.0"

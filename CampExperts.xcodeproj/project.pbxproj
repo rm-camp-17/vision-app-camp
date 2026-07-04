@@ -1,0 +1,469 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B00000000000000000000001 /* CampExpertsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000001 /* CampExpertsApp.swift */; };
+		B00000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000002 /* AppModel.swift */; };
+		B00000000000000000000003 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000003 /* DesignTokens.swift */; };
+		B00000000000000000000004 /* Camp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000004 /* Camp.swift */; };
+		B00000000000000000000005 /* CampCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000005 /* CampCatalog.swift */; };
+		B00000000000000000000006 /* MapProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000006 /* MapProjection.swift */; };
+		B00000000000000000000007 /* CoastlineData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000007 /* CoastlineData.swift */; };
+		B00000000000000000000008 /* NortheastMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000008 /* NortheastMapView.swift */; };
+		B00000000000000000000009 /* CampLensLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000009 /* CampLensLabel.swift */; };
+		B00000000000000000000010 /* MapAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000010 /* MapAssembler.swift */; };
+		B00000000000000000000011 /* ProxyLoopPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000011 /* ProxyLoopPool.swift */; };
+		B00000000000000000000012 /* ImmersivePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000012 /* ImmersivePlayer.swift */; };
+		B00000000000000000000013 /* ThresholdSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000013 /* ThresholdSpaceView.swift */; };
+		B00000000000000000000014 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000014 /* Transport.swift */; };
+		B00000000000000000000015 /* IdleEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000015 /* IdleEngine.swift */; };
+		B00000000000000000000016 /* AmbienceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000016 /* AmbienceEngine.swift */; };
+		B00000000000000000000017 /* EntityFX.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000017 /* EntityFX.swift */; };
+		B00000000000000000000019 /* CampMedia in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000019 /* CampMedia */; };
+		B00000000000000000000020 /* Audio in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000020 /* Audio */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F00000000000000000000001 /* CampExpertsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampExpertsApp.swift; sourceTree = "<group>"; };
+		F00000000000000000000002 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		F00000000000000000000003 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
+		F00000000000000000000004 /* Camp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camp.swift; sourceTree = "<group>"; };
+		F00000000000000000000005 /* CampCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampCatalog.swift; sourceTree = "<group>"; };
+		F00000000000000000000006 /* MapProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapProjection.swift; sourceTree = "<group>"; };
+		F00000000000000000000007 /* CoastlineData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoastlineData.swift; sourceTree = "<group>"; };
+		F00000000000000000000008 /* NortheastMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NortheastMapView.swift; sourceTree = "<group>"; };
+		F00000000000000000000009 /* CampLensLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampLensLabel.swift; sourceTree = "<group>"; };
+		F00000000000000000000010 /* MapAssembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapAssembler.swift; sourceTree = "<group>"; };
+		F00000000000000000000011 /* ProxyLoopPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyLoopPool.swift; sourceTree = "<group>"; };
+		F00000000000000000000012 /* ImmersivePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersivePlayer.swift; sourceTree = "<group>"; };
+		F00000000000000000000013 /* ThresholdSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThresholdSpaceView.swift; sourceTree = "<group>"; };
+		F00000000000000000000014 /* Transport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
+		F00000000000000000000015 /* IdleEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleEngine.swift; sourceTree = "<group>"; };
+		F00000000000000000000016 /* AmbienceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbienceEngine.swift; sourceTree = "<group>"; };
+		F00000000000000000000017 /* EntityFX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityFX.swift; sourceTree = "<group>"; };
+		F00000000000000000000018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F00000000000000000000019 /* CampMedia */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CampMedia; sourceTree = "<group>"; };
+		F00000000000000000000020 /* Audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audio; sourceTree = "<group>"; };
+		F00000000000000000000021 /* CampExperts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampExperts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D00000000000000000000004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C00000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				C00000000000000000000002 /* CampExperts */,
+				C00000000000000000000013 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C00000000000000000000002 /* CampExperts */ = {
+			isa = PBXGroup;
+			children = (
+				C00000000000000000000003 /* App */,
+				C00000000000000000000004 /* Model */,
+				C00000000000000000000005 /* Map */,
+				C00000000000000000000006 /* Playback */,
+				C00000000000000000000007 /* Space */,
+				C00000000000000000000008 /* Transport */,
+				C00000000000000000000009 /* Idle */,
+				C00000000000000000000010 /* Audio */,
+				C00000000000000000000011 /* Support */,
+				C00000000000000000000012 /* Resources */,
+				F00000000000000000000018 /* Info.plist */,
+			);
+			path = CampExperts;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000001 /* CampExpertsApp.swift */,
+				F00000000000000000000002 /* AppModel.swift */,
+				F00000000000000000000003 /* DesignTokens.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000004 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000004 /* Camp.swift */,
+				F00000000000000000000005 /* CampCatalog.swift */,
+				F00000000000000000000006 /* MapProjection.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000005 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000007 /* CoastlineData.swift */,
+				F00000000000000000000008 /* NortheastMapView.swift */,
+				F00000000000000000000009 /* CampLensLabel.swift */,
+				F00000000000000000000010 /* MapAssembler.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000006 /* Playback */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000011 /* ProxyLoopPool.swift */,
+				F00000000000000000000012 /* ImmersivePlayer.swift */,
+			);
+			path = Playback;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000007 /* Space */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000013 /* ThresholdSpaceView.swift */,
+			);
+			path = Space;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000008 /* Transport */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000014 /* Transport.swift */,
+			);
+			path = Transport;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000009 /* Idle */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000015 /* IdleEngine.swift */,
+			);
+			path = Idle;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000010 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000016 /* AmbienceEngine.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000011 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000017 /* EntityFX.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000012 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000019 /* CampMedia */,
+				F00000000000000000000020 /* Audio */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C00000000000000000000013 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000021 /* CampExperts.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D00000000000000000000002 /* CampExperts */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E00000000000000000000004 /* Build configuration list for PBXNativeTarget "CampExperts" */;
+			buildPhases = (
+				D00000000000000000000003 /* Sources */,
+				D00000000000000000000004 /* Frameworks */,
+				D00000000000000000000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CampExperts;
+			productName = CampExperts;
+			productReference = F00000000000000000000021 /* CampExperts.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D00000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					D00000000000000000000002 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = E00000000000000000000001 /* Build configuration list for PBXProject "CampExperts" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C00000000000000000000001;
+			productRefGroup = C00000000000000000000013 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D00000000000000000000002 /* CampExperts */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D00000000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000019 /* CampMedia in Resources */,
+				B00000000000000000000020 /* Audio in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D00000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000001 /* CampExpertsApp.swift in Sources */,
+				B00000000000000000000002 /* AppModel.swift in Sources */,
+				B00000000000000000000003 /* DesignTokens.swift in Sources */,
+				B00000000000000000000004 /* Camp.swift in Sources */,
+				B00000000000000000000005 /* CampCatalog.swift in Sources */,
+				B00000000000000000000006 /* MapProjection.swift in Sources */,
+				B00000000000000000000007 /* CoastlineData.swift in Sources */,
+				B00000000000000000000008 /* NortheastMapView.swift in Sources */,
+				B00000000000000000000009 /* CampLensLabel.swift in Sources */,
+				B00000000000000000000010 /* MapAssembler.swift in Sources */,
+				B00000000000000000000011 /* ProxyLoopPool.swift in Sources */,
+				B00000000000000000000012 /* ImmersivePlayer.swift in Sources */,
+				B00000000000000000000013 /* ThresholdSpaceView.swift in Sources */,
+				B00000000000000000000014 /* Transport.swift in Sources */,
+				B00000000000000000000015 /* IdleEngine.swift in Sources */,
+				B00000000000000000000016 /* AmbienceEngine.swift in Sources */,
+				B00000000000000000000017 /* EntityFX.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E00000000000000000000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		E00000000000000000000003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = xros;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+				XROS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+		E00000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CampExperts/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.campexperts.threshold;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Debug;
+		};
+		E00000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CampExperts/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.campexperts.threshold;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E00000000000000000000001 /* Build configuration list for PBXProject "CampExperts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E00000000000000000000002 /* Debug */,
+				E00000000000000000000003 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E00000000000000000000004 /* Build configuration list for PBXNativeTarget "CampExperts" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E00000000000000000000005 /* Debug */,
+				E00000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D00000000000000000000001 /* Project object */;
+}
