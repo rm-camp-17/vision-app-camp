@@ -142,6 +142,7 @@ extension AppModel {
         introHintVisible = false
         filmHintVisible = false
         browseMode = .geography
+        lang = .en
         idle.cancel()
         aiv.teardown()
 

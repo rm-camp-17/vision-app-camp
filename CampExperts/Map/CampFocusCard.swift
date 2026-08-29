@@ -31,20 +31,20 @@ struct CampFocusCard: View {
                     }
 
                     HStack(spacing: 10) {
-                        chip(camp.gender)
-                        chip(camp.style)
+                        chip(Loc.chip(camp.gender, model.lang))
+                        chip(Loc.chip(camp.style, model.lang))
                         if camp.religion.localizedCaseInsensitiveContains("jewish") {
-                            chip("Jewish values")
+                            chip(Loc.chip("Jewish values", model.lang))
                         }
-                        chip(camp.sessions)
+                        chip(Loc.chip(camp.sessions, model.lang))
                     }
 
                     VStack(spacing: 6) {
-                        Text("PINCH IT AGAIN TO GO INSIDE")
+                        Text(Loc.confirmLine(model.lang))
                             .font(.system(size: 21, weight: .semibold))
                             .tracking(2.0)
                             .foregroundStyle(Design.labelPrimary)
-                        Text("PINCH AWAY FOR THE MAP")
+                        Text(Loc.declineLine(model.lang))
                             .font(.system(size: 15, weight: .medium))
                             .tracking(3.0)
                             .foregroundStyle(Design.labelSecondary)

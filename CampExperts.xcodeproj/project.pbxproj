@@ -30,6 +30,7 @@
 		B00000000000000000000022 /* BrandMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000022 /* BrandMarkView.swift */; };
 		B00000000000000000000024 /* CampFocusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000024 /* CampFocusCard.swift */; };
 		B00000000000000000000026 /* GestureHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000026 /* GestureHintView.swift */; };
+		B00000000000000000000027 /* Loc.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000027 /* Loc.swift */; };
 		B00000000000000000000025 /* CampBrowsePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000025 /* CampBrowsePanel.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		F00000000000000000000022 /* BrandMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandMarkView.swift; sourceTree = "<group>"; };
 		F00000000000000000000024 /* CampFocusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampFocusCard.swift; sourceTree = "<group>"; };
 		F00000000000000000000026 /* GestureHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHintView.swift; sourceTree = "<group>"; };
+		F00000000000000000000027 /* Loc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loc.swift; sourceTree = "<group>"; };
 		F00000000000000000000025 /* CampBrowsePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampBrowsePanel.swift; sourceTree = "<group>"; };
 		F00000000000000000000021 /* CampExperts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampExperts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -106,6 +108,7 @@
 				F00000000000000000000001 /* CampExpertsApp.swift */,
 				F00000000000000000000002 /* AppModel.swift */,
 				F00000000000000000000003 /* DesignTokens.swift */,
+				F00000000000000000000027 /* Loc.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				B00000000000000000000022 /* BrandMarkView.swift in Sources */,
 				B00000000000000000000024 /* CampFocusCard.swift in Sources */,
 				B00000000000000000000026 /* GestureHintView.swift in Sources */,
+				B00000000000000000000027 /* Loc.swift in Sources */,
 				B00000000000000000000025 /* CampBrowsePanel.swift in Sources */,
 				B00000000000000000000011 /* ProxyLoopPool.swift in Sources */,
 				B00000000000000000000012 /* ImmersivePlayer.swift in Sources */,

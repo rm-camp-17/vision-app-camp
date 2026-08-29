@@ -56,6 +56,10 @@ final class AppModel {
     enum BrowseMode { case geography, attributes }
     var browseMode: BrowseMode = .geography
 
+    /// UI language. Camp names never translate; everything the app
+    /// itself says does. Resets to English for each new guest.
+    var lang: Lang = .en
+
     /// Names of the camps this guest actually visited, for the farewell.
     var visitedCampNames: [String] = []
 

@@ -34,7 +34,7 @@ enum CampCatalog {
              style: "Traditional",      gender: "All Boys",       religion: "None",   sessions: "Full summer; two 4-week"),
         Camp(id: "eastwood",        name: "Camp Eastwood",             place: "Oakland, Maine",              latitude: 44.5951, longitude: -69.7626,
              style: "Traditional starter", gender: "Co-Ed",       religion: "None",   sessions: "1–2 week sessions"),
-        Camp(id: "frenchwoods",     name: "French Woods Sports & Arts", place: "Hancock, New York",          latitude: 41.9131, longitude: -75.1997,
+        Camp(id: "frenchwoods",     name: "New York Teen Camp", place: "Hancock, New York",          latitude: 41.9131, longitude: -75.1997,
              style: "Teen sports & arts", gender: "Co-Ed",        religion: "None",   sessions: "2–10 week sessions"),
         Camp(id: "independentlake", name: "Independent Lake Camp",     place: "Thompson, Pennsylvania",      latitude: 41.8309, longitude: -75.4344,
              style: "Specialty hybrid",  gender: "Co-Ed",          religion: "None",   sessions: "2–8 week sessions"),

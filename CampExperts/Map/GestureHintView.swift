@@ -18,9 +18,9 @@ struct GestureHintView: View {
     var body: some View {
         Group {
             if model.introHintVisible {
-                caption("TRY IT — TAP YOUR THUMB AND FINGER TOGETHER TO SKIP AHEAD")
+                caption(Loc.skipHint(model.lang))
             } else if model.filmHintVisible {
-                caption("TAP YOUR THUMB AND FINGER TOGETHER ANYTIME TO COME BACK")
+                caption(Loc.returnHint(model.lang))
             }
         }
         .animation(.easeInOut(duration: 0.7),

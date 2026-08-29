@@ -27,7 +27,7 @@ struct BrandMarkView: View {
 
             if isFarewell {
                 VStack(spacing: 10) {
-                    Text("THAT WAS YOUR THREE CAMPS")
+                    Text(Loc.farewellTitle(model.lang))
                         .font(.system(size: 20, weight: .semibold))
                         .tracking(4)
                         .foregroundStyle(Design.labelPrimary)
@@ -37,7 +37,7 @@ struct BrandMarkView: View {
                             .tracking(2.4)
                             .foregroundStyle(Design.labelSecondary)
                     }
-                    Text("HAND THE HEADSET BACK — LET'S FIND YOURS")
+                    Text(Loc.farewellNudge(model.lang))
                         .font(.system(size: 16, weight: .medium))
                         .tracking(3)
                         .foregroundStyle(Design.labelSecondary)
@@ -45,9 +45,8 @@ struct BrandMarkView: View {
                 .allowsHitTesting(false)
             } else {
                 // The waiting ember is the one warm thing in the dark.
-                Text(isAttract
-                     ? "TAP YOUR THUMB AND FINGER TOGETHER TO BEGIN"
-                     : "LOOK AT A CAMP — TAP YOUR THUMB AND FINGER TOGETHER TO VISIT")
+                Text(isAttract ? Loc.attractInvite(model.lang)
+                               : Loc.instruction(model.lang))
                     .font(.system(size: 17, weight: .medium))
                     .tracking(4)
                     .foregroundStyle(isAttract ? AnyShapeStyle(Design.ember.opacity(0.85))
@@ -58,8 +57,9 @@ struct BrandMarkView: View {
                 // regroups the same camps by what a family is looking for.
                 if !isAttract {
                     HStack(spacing: 12) {
-                        toggleButton("BY MAP", .geography)
-                        toggleButton("BY CAMP TYPE", .attributes)
+                        toggleButton(Loc.byMap(model.lang), .geography)
+                        toggleButton(Loc.byType(model.lang), .attributes)
+                        langButton()
                     }
                     .padding(.top, 4)
                 }
@@ -89,6 +89,26 @@ struct BrandMarkView: View {
                 .background(active ? AnyShapeStyle(Design.labelPrimary)
                                    : AnyShapeStyle(Color.white.opacity(0.10)),
                             in: Capsule())
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .hoverEffect()
+    }
+
+    /// The language pill wears the language it OFFERS, not the one
+    /// showing — a French family sees "FR" and knows what to do.
+    private func langButton() -> some View {
+        Button {
+            model.lang = (model.lang == .en) ? .fr : .en
+        } label: {
+            Text(model.lang == .en ? "FR" : "EN")
+                .font(.system(size: 16, weight: .semibold))
+                .tracking(2.6)
+                .foregroundStyle(Design.labelPrimary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(Color.white.opacity(0.10), in: Capsule())
+                .overlay(Capsule().stroke(Design.labelSecondary.opacity(0.35), lineWidth: 1))
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
