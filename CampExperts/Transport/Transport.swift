@@ -104,6 +104,8 @@ extension AppModel {
         guard let anchors else { return }
         visitsThisGuest = 0
         introStartedAt = nil
+        focusTimeoutTask?.cancel()
+        focusedCamp = nil
         idle.cancel()
         aiv.teardown()
 
@@ -123,10 +125,86 @@ extension AppModel {
         phase = .attract
     }
 
+    // MARK: - Focus: the pause before the plunge
+
+    /// Swell one camp toward the visitor and present its card. The rest
+    /// of the map recedes but stays present — this is consideration, not
+    /// commitment.
+    func focusCamp(_ camp: Camp) {
+        guard let anchors else { return }
+        switch phase {
+        case .map, .focused: break
+        default: return
+        }
+
+        // Returning a previously focused lens home first (switching).
+        if case .focused(let previous) = phase, previous.id != camp.id,
+           let home = anchors.homeTransforms[previous.id] {
+            anchors.lensRoots[previous.id]?.move(
+                to: home, relativeTo: anchors.mapRoot,
+                duration: Design.focusMove, timingFunction: .easeInOut)
+        }
+
+        flowLog.info("focus \(camp.id)")
+        phase = .focused(camp)
+        focusedCamp = camp
+        idle.cancel()
+
+        for (id, lens) in anchors.lensRoots where id != camp.id {
+            lens.fade(to: Design.focusDimOpacity, duration: Design.focusMove)
+        }
+        if let chosen = anchors.lensRoots[camp.id],
+           let home = anchors.homeTransforms[camp.id] {
+            chosen.fade(to: 1, duration: Design.focusMove)
+            let spot = anchors.mapRoot.convert(position: Design.lensFocusPoint,
+                                               from: nil)
+            var target = home
+            target.translation = spot
+            target.scale = SIMD3(repeating: Design.lensFocusScale)
+            chosen.move(to: target, relativeTo: anchors.mapRoot,
+                        duration: Design.focusMove, timingFunction: .easeInOut)
+        }
+
+        // A focused camp left alone folds back into the map on its own.
+        focusTimeoutTask?.cancel()
+        focusTimeoutTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Design.focusTimeout))
+            guard !Task.isCancelled, let self,
+                  case .focused(let held) = self.phase, held.id == camp.id
+            else { return }
+            self.unfocus()
+        }
+    }
+
+    /// "Not this one": the lens sails home, the map breathes back.
+    func unfocus() {
+        guard case .focused(let camp) = phase, let anchors else { return }
+        flowLog.info("unfocus")
+        focusTimeoutTask?.cancel()
+        focusedCamp = nil
+        phase = .map
+
+        if let home = anchors.homeTransforms[camp.id] {
+            anchors.lensRoots[camp.id]?.move(
+                to: home, relativeTo: anchors.mapRoot,
+                duration: Design.focusMove, timingFunction: .easeInOut)
+        }
+        for (_, lens) in anchors.lensRoots {
+            lens.fade(to: 1, duration: Design.focusMove)
+        }
+        idle.arm()
+    }
+
     // MARK: - The crossing: map dissolves, place opens
 
     func beginTransport(to camp: Camp) {
-        guard case .map = phase, anchors != nil else { return }
+        switch phase {
+        case .map, .focused: break
+        default: return
+        }
+        guard anchors != nil else { return }
+        focusTimeoutTask?.cancel()
+        focusedCamp = nil
         phase = .transporting(camp)
         idle.cancel()
         Task { await crossThreshold(to: camp) }
@@ -196,6 +274,7 @@ extension AppModel {
 
     func beginReturn() {
         guard case .visiting(let camp) = phase else { return }
+        flowLog.info("returning from \(camp.id)")
         phase = .returning
         Task { await returnToMap(from: camp) }
     }

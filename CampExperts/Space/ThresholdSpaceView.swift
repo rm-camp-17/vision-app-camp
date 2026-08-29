@@ -30,6 +30,9 @@ struct ThresholdSpaceView: View {
             Attachment(id: "brand") {
                 BrandMarkView()
             }
+            Attachment(id: "focuscard") {
+                CampFocusCard()
+            }
             ForEach(CampCatalog.all) { camp in
                 Attachment(id: camp.id) {
                     CampLensLabel(camp: camp)

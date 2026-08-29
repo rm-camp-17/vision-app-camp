@@ -51,6 +51,13 @@ enum MapAssembler {
             anchors.mapRoot.addChild(brand)
         }
 
+        // The focus card hangs below the swelled lens, world-anchored so
+        // it never tilts with the map.
+        if let card = attachments.entity(for: "focuscard") {
+            card.position = SIMD3(0, 1.02, -1.10)
+            anchors.root.addChild(card)
+        }
+
         let placed = separatedPositions(for: catalog)
         for camp in catalog {
             let lens = makeLens(for: camp,
@@ -144,9 +151,11 @@ enum MapAssembler {
         let disc = ModelEntity(mesh: mesh, materials: [material])
         disc.name = "lens.\(camp.id)"
         disc.components.set(InputTargetComponent())
-        // Collision slightly larger than the disc: forgiving gaze targeting.
+        // Collision well beyond the disc: first-wear guests arrive with
+        // rough eye calibration, and a generous target plus the focus
+        // confirm step is what makes selection feel dependable.
         disc.components.set(CollisionComponent(
-            shapes: [.generateBox(width: radius * 2.4, height: radius * 2.4, depth: 0.02)],
+            shapes: [.generateBox(width: radius * 3.2, height: radius * 3.2, depth: 0.02)],
             isStatic: true))
         // The gaze answer. Rendered by the system, out of process; the app
         // never learns where the visitor is looking.

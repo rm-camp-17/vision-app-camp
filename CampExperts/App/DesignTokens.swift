@@ -33,6 +33,20 @@ enum Design {
     /// so labels never collide (disc is 9 cm across).
     static let lensMinSeparation: Float = 0.19
 
+    // MARK: - Focus (the pause before the plunge)
+
+    /// First pinch focuses a camp instead of entering it: the lens swells
+    /// toward the visitor and a card presents the camp. A second pinch on
+    /// the lens enters; a pinch anywhere else returns to the map. Big
+    /// targets and an explicit confirm forgive first-wear eye calibration.
+    static let lensFocusPoint = SIMD3<Float>(0, 1.46, -1.10)
+    static let lensFocusScale: Float = 2.6
+    static let focusMove: TimeInterval = 0.45
+    /// How far the rest of the map recedes while something is focused.
+    static let focusDimOpacity: Float = 0.30
+    /// A focused camp left alone returns to the map on its own.
+    static let focusTimeout: TimeInterval = 30
+
     // MARK: - Booth flow
 
     /// How many camp visits one guest gets before the space resets for
@@ -85,7 +99,7 @@ enum Design {
 
     /// If nobody chooses, the space chooses. Long enough to browse,
     /// short enough that the room never feels stuck.
-    static let idleDelay: Duration = .seconds(13)
+    static let idleDelay: Duration = .seconds(25)
 
     /// Pinches this early in a visit are almost always the confirm pinch
     /// echoing, or a startled hand. Ignore them.

@@ -25,6 +25,7 @@ final class AppModel {
         case attract          // dark and quiet; waiting for the next guest
         case intro            // the welcome reel is playing
         case map
+        case focused(Camp)    // one camp swelled forward, card showing
         case transporting(Camp)
         case visiting(Camp)
         case returning
@@ -38,6 +39,11 @@ final class AppModel {
     /// the map, and the space waits for the next family.
     var visitsThisGuest = 0
     var introStartedAt: Date?
+
+    /// The camp currently presented on the focus card (drives the card's
+    /// SwiftUI content and visibility).
+    var focusedCamp: Camp?
+    @ObservationIgnored var focusTimeoutTask: Task<Void, Never>?
 
     // The Canvas map and the labels live in SwiftUI attachment views;
     // driving their visibility from observable state keeps those fades in
@@ -76,8 +82,20 @@ final class AppModel {
     // MARK: - Input
 
     func lensTapped(id: String) {
-        guard case .map = phase, let camp = CampCatalog.camp(id) else { return }
-        beginTransport(to: camp)
+        guard let camp = CampCatalog.camp(id) else { return }
+        switch phase {
+        case .map:
+            // First pinch presents; it never plunges.
+            focusCamp(camp)
+        case .focused(let current) where current.id == camp.id:
+            // The confirming pinch on the swelled lens: enter.
+            beginTransport(to: camp)
+        case .focused:
+            // A different lens: switch the presentation over.
+            focusCamp(camp)
+        default:
+            break
+        }
     }
 
     /// A pinch that missed every lens.
@@ -96,6 +114,9 @@ final class AppModel {
         case .map:
             // A person is here and browsing; give them the full clock.
             idle.arm()
+        case .focused:
+            // A pinch away from the lens is "not this one" — back to the map.
+            unfocus()
         case .visiting:
             guard let started = visitStartedAt,
                   Date().timeIntervalSince(started) > Design.returnGrace
@@ -120,7 +141,7 @@ final class AppModel {
             if case .attract = phase { beginIntro() }
         } else {
             switch phase {
-            case .map, .visiting, .intro:
+            case .map, .focused, .visiting, .intro:
                 resetForNextGuest()
             default:
                 break

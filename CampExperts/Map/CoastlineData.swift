@@ -81,4 +81,48 @@ enum CoastlineData {
             (43.81, -70.56),
         ],
     ]
+
+    /// Hand-simplified state borders. These are what make the drawing
+    /// read as "the Northeast" at a glance — the 42nd-parallel PA line,
+    /// the Delaware, Champlain, the tall Maine border. Interstate lines
+    /// only; the Atlantic edge is the coastline above.
+    static let borders: [[(Double, Double)]] = [
+        // PA / NY — the straight 42° line, then the Delaware down to NJ.
+        [
+            (42.00, -77.95), (42.00, -75.36), (41.77, -75.08), (41.44, -74.98),
+            (41.36, -74.70), (40.97, -75.13), (40.58, -75.19), (40.32, -75.06),
+        ],
+        // NY / NJ — Delaware to the Hudson.
+        [(41.36, -74.70), (40.99, -73.92)],
+        // NY / CT / MA / VT — the long western wall of New England.
+        [
+            (41.02, -73.66), (41.20, -73.55), (42.05, -73.50), (42.74, -73.27),
+            (43.25, -73.26), (43.60, -73.40),
+        ],
+        // MA north (NH line).
+        [(42.74, -73.27), (42.71, -71.90), (42.70, -71.29), (42.86, -70.92)],
+        // MA south (CT/RI line) and RI's little edges.
+        [(42.04, -73.50), (42.02, -71.80), (42.00, -71.38), (41.68, -71.33)],
+        [(42.00, -71.80), (41.38, -71.83)],
+        // NH / ME — the tall diagonal.
+        [(43.09, -70.76), (43.60, -70.97), (44.40, -71.00), (45.24, -71.08)],
+        // The 45th parallel and the St. Lawrence — Canada.
+        [
+            (45.01, -71.50), (45.01, -73.35), (45.01, -74.75), (44.70, -75.45),
+            (44.35, -75.95), (44.10, -76.45),
+        ],
+    ]
+
+    /// Quiet uppercase state names, placed in each state's open country
+    /// away from the camp clusters.
+    static let stateLabels: [(String, Double, Double)] = [
+        ("MAINE",         45.02, -69.30),
+        ("NEW HAMPSHIRE", 44.65, -71.42),
+        ("VERMONT",       44.45, -72.60),
+        ("MASSACHUSETTS", 42.36, -72.10),
+        ("CONNECTICUT",   41.63, -72.55),
+        ("NEW YORK",      42.85, -75.60),
+        ("PENNSYLVANIA",  41.05, -76.55),
+        ("NEW JERSEY",    40.55, -74.55),
+    ]
 }

@@ -32,8 +32,11 @@ struct CampLensLabel: View {
         }
         .multilineTextAlignment(.center)
         .frame(width: 250)
-        .opacity(model.labelsVisible ? 1 : 0)
+        // Hidden while this camp is focused — the swelled lens would
+        // dwarf it, and the card carries the identity instead.
+        .opacity(model.labelsVisible && model.focusedCamp?.id != camp.id ? 1 : 0)
         .animation(.easeInOut(duration: 0.5), value: model.labelsVisible)
+        .animation(.easeInOut(duration: 0.3), value: model.focusedCamp)
         .allowsHitTesting(false)
     }
 }

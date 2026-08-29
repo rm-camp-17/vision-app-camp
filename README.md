@@ -2,11 +2,13 @@
 
 A native visionOS 26 app for the expo booth. A dark, minimal map of the
 Northeast floats in a dimmed room; twenty camps glow on it as small living
-lenses. Look at one and it brightens. Pinch, and the map dissolves as the
-camp opens around you in Apple Immersive Video. Three to five minutes
+lenses. Look at one and it brightens. A pinch swells it forward over a card of
+plain facts — who it's for, what kind of camp, its rhythm. A second
+pinch, and the map dissolves as the camp opens around you in Apple
+Immersive Video. Three to five minutes
 inside, then the map breathes back in exactly where you left it. If nobody
-chooses within thirteen seconds, the space chooses — a different camp
-every time.
+chooses within twenty-five seconds, the space chooses — a different
+camp every time.
 
 The app is the threshold. The camps are the destination.
 
@@ -21,23 +23,28 @@ The app is the threshold. The camps are the destination.
    and it brightens under the system's spotlight hover — the app never
    learns where anyone is looking; visionOS renders the answer privately,
    out of process. Two quiet lines of type sit beneath each lens.
-3. **The crossing.** A pinch chooses. Every other lens exhales to black and
+3. **The pause.** A pinch presents: the lens swells toward you over a
+   card naming the camp and its traits (gender, style, session rhythm,
+   Jewish values where they apply), with plain words for what a pinch
+   does next. A pinch elsewhere breathes the map back — first-wear eye
+   calibration is rough, so nothing plunges on a single pinch.
+4. **The crossing.** A pinch on the swelled camp chooses. Every other lens exhales to black and
    the coastline dims (0.35–0.55 s). The chosen lens drifts off the map to
    meet you, swelling slightly (0.7 s), then dissolves (0.3 s). A held beat
    of true dark (0.45 s) — the threshold itself — and the camp blooms in
    from black (1.4 s), enveloping the view through progressive immersion.
    A single low swell of sound carries the whole move. Roughly 3.2 seconds,
    map to camp, and none of it is a cut.
-4. **The visit.** Apple Immersive Video with its own spatial audio. No
+5. **The visit.** Apple Immersive Video with its own spatial audio. No
    interface at all. The Digital Crown always hands "how much world" back
    to the visitor. A pinch (after a 5 s grace period) or the end of the
    film begins the return.
-5. **The return.** The scene fades down with its sound, a beat of dark,
+6. **The return.** The scene fades down with its sound, a beat of dark,
    then the map breathes back in — lenses rippling outward from the camp
    just visited, everything exactly where it was left.
-6. **Idle.** Thirteen seconds without a choice and the space chooses,
-   drawing from a shuffled bag so all twenty camps appear before any
-   repeats.
+7. **Idle.** Twenty-five seconds without a choice and the space chooses,
+   drawing from a shuffled bag so all twenty-two camps appear before
+   any repeats.
 
 ## Run it
 
