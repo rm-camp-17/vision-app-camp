@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024">
+<defs><clipPath id="c"><circle cx="512" cy="512" r="512"/></clipPath></defs>
+<g clip-path="url(#c)">
+<image href="icon-back.png" width="1024" height="1024"/>
+<image href="icon-middle.png" width="1024" height="1024"/>
+</g></svg>

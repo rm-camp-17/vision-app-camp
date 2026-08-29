@@ -43,8 +43,20 @@ enum MapAssembler {
             anchors.mapRoot.addChild(mapCanvas)
         }
 
+        // The wordmark floats just above the map's top edge, on the same
+        // tilted plane, slightly proud of it like the lenses.
+        if let brand = attachments.entity(for: "brand") {
+            brand.position = SIMD3(0, MapProjection.mapHeight / 2 + 0.10,
+                                   Design.lensLift)
+            anchors.mapRoot.addChild(brand)
+        }
+
+        let placed = separatedPositions(for: catalog)
         for camp in catalog {
-            let lens = makeLens(for: camp, loops: loops, attachments: attachments)
+            let lens = makeLens(for: camp,
+                                at: placed[camp.id] ?? MapProjection.position(
+                                    latitude: camp.latitude, longitude: camp.longitude),
+                                loops: loops, attachments: attachments)
             anchors.lensRoots[camp.id] = lens.root
             anchors.lensDiscs[camp.id] = lens.disc
             anchors.homeTransforms[camp.id] = lens.root.transform
@@ -66,15 +78,52 @@ enum MapAssembler {
         return anchors
     }
 
+    /// Real camps cluster — three in Greeley PA within 3 km, three on the
+    /// Belgrade Lakes within 2 km. At tabletop scale those project onto
+    /// the same point, so lenses are pushed apart pairwise until every
+    /// pair clears `Design.lensMinSeparation`, then clamped to the map.
+    /// Deterministic (no randomness): same catalog, same layout.
+    private static func separatedPositions(for catalog: [Camp]) -> [String: SIMD2<Float>] {
+        var positions = catalog.map {
+            MapProjection.position(latitude: $0.latitude, longitude: $0.longitude)
+        }
+        let minD = Design.lensMinSeparation
+        for _ in 0..<200 {
+            var moved = false
+            for i in positions.indices {
+                for j in positions.indices where j > i {
+                    var delta = positions[j] - positions[i]
+                    var dist = simd_length(delta)
+                    if dist < 1e-6 {                     // exact overlap: split on x
+                        delta = SIMD2(1e-3, 0); dist = 1e-3
+                    }
+                    guard dist < minD else { continue }
+                    let push = (minD - dist) / 2 * (delta / dist)
+                    positions[i] -= push
+                    positions[j] += push
+                    moved = true
+                }
+            }
+            if !moved { break }
+        }
+        let halfW = Design.mapWidth / 2 - Design.lensRadius
+        let halfH = MapProjection.mapHeight / 2 - Design.lensRadius
+        var out: [String: SIMD2<Float>] = [:]
+        for (camp, p) in zip(catalog, positions) {
+            out[camp.id] = SIMD2(min(max(p.x, -halfW), halfW),
+                                 min(max(p.y, -halfH), halfH))
+        }
+        return out
+    }
+
     private static func makeLens(for camp: Camp,
+                                 at mapPosition: SIMD2<Float>,
                                  loops: ProxyLoopPool,
                                  attachments: RealityViewAttachments)
     -> (root: Entity, disc: ModelEntity) {
 
         let root = Entity()
         root.name = "lensroot.\(camp.id)"
-        let mapPosition = MapProjection.position(latitude: camp.latitude,
-                                                 longitude: camp.longitude)
         root.position = SIMD3(mapPosition.x, mapPosition.y, Design.lensLift)
 
         let radius = Design.lensRadius
@@ -84,7 +133,7 @@ enum MapAssembler {
 
         // A living loop when the proxy exists; a dark, waiting disc when it
         // doesn't, so a media-less build is dim rather than broken.
-        let material: any Material
+        let material: any RealityKit.Material
         if let player = loops.player(for: camp) {
             material = VideoMaterial(avPlayer: player)
         } else {

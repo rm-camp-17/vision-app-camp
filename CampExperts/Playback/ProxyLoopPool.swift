@@ -17,7 +17,7 @@ final class ProxyLoopPool {
     /// which current hardware sustains twenty of comfortably. If a future
     /// asset drop pushes bitrates up and the map stutters, lower this:
     /// camps beyond the budget hold their dark waiting discs instead.
-    var maxLive = 20
+    var maxLive = 22
 
     private var players: [String: AVQueuePlayer] = [:]
     private var loopers: [String: AVPlayerLooper] = [:]

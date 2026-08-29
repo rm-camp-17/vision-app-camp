@@ -17,3 +17,6 @@ CampExperts/Resources/CampMedia/**/*.mp4
 CampExperts/Resources/Audio/*.m4a
 CampExperts/Resources/Audio/*.caf
 CampExperts/Resources/Audio/*.wav
+
+# Proxy loop staging cut from the drive masters (regenerate: see docs)
+ProxyStaging/

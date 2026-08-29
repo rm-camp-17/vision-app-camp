@@ -11,6 +11,10 @@
 import SwiftUI
 import RealityKit
 import Observation
+import os
+
+/// Booth diagnostics: `log stream --predicate 'subsystem == "com.campexperts.threshold"'`
+let flowLog = Logger(subsystem: "com.campexperts.threshold", category: "flow")
 
 @MainActor
 @Observable
@@ -18,6 +22,8 @@ final class AppModel {
 
     enum Phase: Equatable {
         case boot
+        case attract          // dark and quiet; waiting for the next guest
+        case intro            // the welcome reel is playing
         case map
         case transporting(Camp)
         case visiting(Camp)
@@ -26,6 +32,12 @@ final class AppModel {
 
     /// Written only by the choreography in Transport.swift.
     var phase: Phase = .boot
+
+    /// Camp visits completed by the current guest. At
+    /// `Design.visitsPerGuest` the return goes to `.attract` instead of
+    /// the map, and the space waits for the next family.
+    var visitsThisGuest = 0
+    var introStartedAt: Date?
 
     // The Canvas map and the labels live in SwiftUI attachment views;
     // driving their visibility from observable state keeps those fades in
@@ -71,6 +83,16 @@ final class AppModel {
     /// A pinch that missed every lens.
     func shellTapped() {
         switch phase {
+        case .attract:
+            // A guest is here (or an operator is testing): wake up.
+            beginIntro()
+        case .intro:
+            // A deliberate pinch skips the reel — but not in the first
+            // moments, so a stray confirm never robs the welcome.
+            guard let started = introStartedAt,
+                  Date().timeIntervalSince(started) > Design.introSkipGrace
+            else { return }
+            finishIntro()
         case .map:
             // A person is here and browsing; give them the full clock.
             idle.arm()
@@ -81,6 +103,28 @@ final class AppModel {
             beginReturn()
         default:
             break
+        }
+    }
+
+    // MARK: - Headset on / off
+
+    /// visionOS deactivates the scene when the headset comes off and
+    /// reactivates it when the next guest puts it on. Donning from the
+    /// waiting state starts the welcome reel; removal mid-journey resets
+    /// so the next family never starts in the middle of someone else's
+    /// visit. (Removal mid-crossing lets the crossing land in `.visiting`
+    /// first; the subsequent deactivation-reset is caught on re-don via
+    /// the `.attract` check in the operator flow.)
+    func scenePhaseChanged(isActive: Bool) {
+        if isActive {
+            if case .attract = phase { beginIntro() }
+        } else {
+            switch phase {
+            case .map, .visiting, .intro:
+                resetForNextGuest()
+            default:
+                break
+            }
         }
     }
 }

@@ -43,8 +43,13 @@ final class ImmersivePlayer {
 
         let entity = Entity()
         entity.name = "aiv.\(camp.id)"
-        // AIV is rendered relative to the space origin; keep the entity there.
-        entity.position = .zero
+        // AIV renders as a dome relative to the space origin; keep the
+        // entity there. Flat fallback media renders as a screen AT the
+        // entity — which at the origin sits inside the viewer's head —
+        // so float stand-ins ahead at a comfortable watching distance.
+        entity.position = url.pathExtension == "aivu"
+            ? .zero
+            : SIMD3(0, 1.30, -2.0)
         entity.components.set(video)
         entity.components.set(OpacityComponent(opacity: 0))
 

@@ -27,6 +27,9 @@ struct ThresholdSpaceView: View {
             Attachment(id: "map") {
                 NortheastMapView()
             }
+            Attachment(id: "brand") {
+                BrandMarkView()
+            }
             ForEach(CampCatalog.all) { camp in
                 Attachment(id: camp.id) {
                     CampLensLabel(camp: camp)

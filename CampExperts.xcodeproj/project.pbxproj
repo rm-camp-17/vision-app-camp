@@ -26,6 +26,8 @@
 		B00000000000000000000017 /* EntityFX.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000017 /* EntityFX.swift */; };
 		B00000000000000000000019 /* CampMedia in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000019 /* CampMedia */; };
 		B00000000000000000000020 /* Audio in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000020 /* Audio */; };
+		B00000000000000000000023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000023 /* Assets.xcassets */; };
+		B00000000000000000000022 /* BrandMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000022 /* BrandMarkView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,8 @@
 		F00000000000000000000018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F00000000000000000000019 /* CampMedia */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CampMedia; sourceTree = "<group>"; };
 		F00000000000000000000020 /* Audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Audio; sourceTree = "<group>"; };
+		F00000000000000000000023 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F00000000000000000000022 /* BrandMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandMarkView.swift; sourceTree = "<group>"; };
 		F00000000000000000000021 /* CampExperts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampExperts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -84,6 +88,7 @@
 				C00000000000000000000010 /* Audio */,
 				C00000000000000000000011 /* Support */,
 				C00000000000000000000012 /* Resources */,
+				F00000000000000000000023 /* Assets.xcassets */,
 				F00000000000000000000018 /* Info.plist */,
 			);
 			path = CampExperts;
@@ -116,6 +121,7 @@
 				F00000000000000000000008 /* NortheastMapView.swift */,
 				F00000000000000000000009 /* CampLensLabel.swift */,
 				F00000000000000000000010 /* MapAssembler.swift */,
+				F00000000000000000000022 /* BrandMarkView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -245,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B00000000000000000000019 /* CampMedia in Resources */,
+				B00000000000000000000023 /* Assets.xcassets in Resources */,
 				B00000000000000000000020 /* Audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,6 +273,7 @@
 				B00000000000000000000008 /* NortheastMapView.swift in Sources */,
 				B00000000000000000000009 /* CampLensLabel.swift in Sources */,
 				B00000000000000000000010 /* MapAssembler.swift in Sources */,
+				B00000000000000000000022 /* BrandMarkView.swift in Sources */,
 				B00000000000000000000011 /* ProxyLoopPool.swift in Sources */,
 				B00000000000000000000012 /* ImmersivePlayer.swift in Sources */,
 				B00000000000000000000013 /* ThresholdSpaceView.swift in Sources */,

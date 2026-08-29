@@ -13,7 +13,7 @@ enum Design {
     // MARK: - Stage geometry (meters, space origin is the floor under the visitor)
 
     /// Center of the map in the room.
-    static let mapCenter = SIMD3<Float>(0, 1.28, -1.55)
+    static let mapCenter = SIMD3<Float>(0, 1.38, -1.55)
 
     /// The map leans back like a drafting table, top edge away from the visitor.
     static let mapTiltRadians: Float = -0.21   // ~12 degrees
@@ -27,6 +27,28 @@ enum Design {
 
     /// Lenses float slightly proud of the map plane.
     static let lensLift: Float = 0.035
+
+    /// Minimum center-to-center distance between any two lenses after the
+    /// layout separation pass — enough for two discs plus breathing room
+    /// so labels never collide (disc is 9 cm across).
+    static let lensMinSeparation: Float = 0.19
+
+    // MARK: - Booth flow
+
+    /// How many camp visits one guest gets before the space resets for
+    /// the next family.
+    static let visitsPerGuest = 3
+
+    /// A pinch can skip the intro reel, but not in the first moments —
+    /// the confirming pinch from the previous interaction must not
+    /// bounce a new guest straight past the welcome.
+    static let introSkipGrace: TimeInterval = 3.0
+
+    /// Intro reel fade in/out.
+    static let introFade: TimeInterval = 0.9
+
+    /// The intro reel's soundtrack (played alongside the silent .aivu).
+    static let introAudioVolume: Float = 0.9
 
     /// Where a chosen lens travels before the crossing: near, just below eye line.
     static let lensApproachPoint = SIMD3<Float>(0, 1.30, -0.85)

@@ -7,8 +7,23 @@ Camp identity (names, coordinates, media folder ids): `CampExperts/Model/CampCat
 
 ## Build & run from the CLI
 
+**On Riley's Mac use `./scripts/manual_build.sh run`** — it compiles with
+swiftc and assembles the bundle by hand, because PC Matic endpoint
+security wedges xcodebuild's SWBBuildService (spawned toolchain probes
+hang forever in a never-drained pipe; xcodebuild waits at "Create build
+description" with 0% CPU). The same swiftc toolchain runs fine from a
+shell. If PC Matic is ever properly tamed (verify: xcodebuild reaches
+SwiftCompile within a minute), the standard path below works too.
+
+Booth-flow diagnostics (note `--info` — the flow log is info level):
+
 ```sh
-# Build for the simulator (predictable output path via -derivedDataPath)
+xcrun simctl spawn booted log show --info --last 5m \
+  --predicate 'subsystem == "com.campexperts.threshold"' --style compact
+```
+
+```sh
+# Standard path (blocked by PC Matic on this machine — see above)
 xcodebuild -project CampExperts.xcodeproj -scheme CampExperts \
   -destination 'platform=visionOS Simulator,name=Apple Vision Pro' \
   -derivedDataPath build build

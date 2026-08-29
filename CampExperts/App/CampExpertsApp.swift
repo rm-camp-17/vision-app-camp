@@ -22,11 +22,19 @@ struct CampExpertsApp: App {
     @State private var model = AppModel()
     @State private var immersion: ImmersionStyle = .progressive(
         Design.immersionRange, initialAmount: Design.immersionInitial)
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         ImmersiveSpace(id: "threshold") {
             ThresholdSpaceView()
                 .environment(model)
+                // The headset coming off deactivates the scene; the next
+                // guest putting it on reactivates it. That transition is
+                // the booth's whole session model: don → welcome reel,
+                // doff → reset for the next family.
+                .onChange(of: scenePhase) { _, newPhase in
+                    model.scenePhaseChanged(isActive: newPhase == .active)
+                }
         }
         .immersionStyle(
             selection: $immersion,

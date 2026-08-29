@@ -17,18 +17,73 @@ extension AppModel {
     // MARK: - Boot: the room finds its light
 
     func bootIn() async {
-        guard let anchors else { return }
         ambience.startBed()
-
+        flowLog.info("bootIn: anchors ready, lenses=\(self.anchors?.lensRoots.count ?? -1)")
         try? await Task.sleep(for: .seconds(Design.bootBeat))
+        beginIntro()
+    }
+
+    // MARK: - The welcome: the reel that greets a new guest
+
+    /// Plays the Camp Experts highlight reel, then opens the map. If the
+    /// intro media isn't bundled, the map opens directly — the intro is
+    /// optional like every other asset.
+    func beginIntro() {
+        flowLog.info("beginIntro from \(String(describing: self.phase))")
+        guard phase == .boot || phase == .attract, anchors != nil else { return }
+
+        let playerEntity = aiv.makeEntity(for: CampCatalog.intro) { [weak self] in
+            self?.finishIntro()
+        }
+        guard let playerEntity, let anchors else {
+            phase = .intro
+            Task { await bootMapIn() }
+            return
+        }
+
+        phase = .intro
+        introStartedAt = Date()
+        ambience.duckBed()
+        anchors.playerHost.addChild(playerEntity)
+        aiv.play()
+        // The reel is delivered silent; its soundtrack rides alongside.
+        ambience.startIntroAudio()
+        playerEntity.fade(to: 1, duration: Design.introFade)
+    }
+
+    /// The reel ended (or a settled guest pinched past it): fade down,
+    /// hold the dark, open the map.
+    func finishIntro() {
+        flowLog.info("finishIntro from \(String(describing: self.phase))")
+        guard case .intro = phase else { return }
+        introStartedAt = nil
+        Task {
+            aiv.entity?.fade(to: 0, duration: Design.introFade)
+            ambience.stopIntroAudio(over: Design.introFade)
+            try? await Task.sleep(for: .seconds(Design.introFade))
+            aiv.teardown()
+            try? await Task.sleep(for: .seconds(Design.darkHold))
+            await bootMapIn()
+        }
+    }
+
+    // MARK: - The map arrives
+
+    private func bootMapIn() async {
+        flowLog.info("bootMapIn")
+        guard let anchors else { return }
+        anchors.mapRoot.isEnabled = true
+        ambience.liftBed()
         mapVisible = true   // the coastline breathes in
 
         try? await Task.sleep(for: .seconds(0.5))
         loops.playAll()
 
         // Lenses arrive west to east — a slow sweep of lights coming on.
+        // Roots too: after a guest reset they were exhaled to zero.
         let ordered = CampCatalog.all.sorted { $0.longitude < $1.longitude }
         for camp in ordered {
+            anchors.lensRoots[camp.id]?.fade(to: 1, duration: Design.bootLensFade)
             anchors.lensDiscs[camp.id]?.fade(to: 1, duration: Design.bootLensFade)
             try? await Task.sleep(for: .seconds(Design.bootLensStagger))
         }
@@ -36,7 +91,36 @@ extension AppModel {
         try? await Task.sleep(for: .seconds(0.4))
         labelsVisible = true
         phase = .map
+        flowLog.info("map phase reached; mapVisible=\(self.mapVisible)")
         idle.arm()
+    }
+
+    // MARK: - Reset: the space goes quiet for the next family
+
+    /// After the last visit of a guest's journey (or the headset coming
+    /// off), everything fades and the space waits in the dark. The next
+    /// don of the headset — or a pinch — begins the welcome again.
+    func resetForNextGuest() {
+        guard let anchors else { return }
+        visitsThisGuest = 0
+        introStartedAt = nil
+        idle.cancel()
+        aiv.teardown()
+
+        labelsVisible = false
+        mapVisible = false
+        for (_, lens) in anchors.lensRoots {
+            lens.fade(to: 0, duration: Design.otherLensesExhale)
+        }
+        for (id, home) in anchors.homeTransforms {
+            anchors.lensRoots[id]?.transform = home
+        }
+        loops.pauseAll()
+        ambience.duckBed()
+        ambience.stopIntroAudio(over: 0.3)
+        // mapRoot stays enabled: the brand mark keeps a faint ember
+        // presence during attract. Phase guards make lenses inert.
+        phase = .attract
     }
 
     // MARK: - The crossing: map dissolves, place opens
@@ -49,6 +133,7 @@ extension AppModel {
     }
 
     private func crossThreshold(to camp: Camp) async {
+        flowLog.info("crossing to \(camp.id)")
         guard let anchors else { return }
 
         // Prepare the destination immediately. The file is local, so by the
@@ -103,6 +188,7 @@ extension AppModel {
         aiv.play()
         playerEntity.fade(to: 1, duration: Design.sceneBloom)
         visitStartedAt = Date()
+        visitsThisGuest += 1
         phase = .visiting(camp)
     }
 
@@ -120,6 +206,14 @@ extension AppModel {
         aiv.teardown()
 
         try? await Task.sleep(for: .seconds(Design.darkHold))
+
+        // The last visit of this guest's journey ends the session: the
+        // space goes dark and waits for the next family instead of
+        // reopening the map.
+        if visitsThisGuest >= Design.visitsPerGuest {
+            resetForNextGuest()
+            return
+        }
         await restoreMap(around: camp)
     }
 

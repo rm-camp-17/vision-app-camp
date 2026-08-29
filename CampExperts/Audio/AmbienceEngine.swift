@@ -16,6 +16,7 @@ final class AmbienceEngine {
 
     private var bed: AVAudioPlayer?
     private var swell: AVAudioPlayer?
+    private var intro: AVAudioPlayer?
 
     init() {
         try? AVAudioSession.sharedInstance().setCategory(.playback)
@@ -31,6 +32,28 @@ final class AmbienceEngine {
                                      subdirectory: "Audio") {
             swell = try? AVAudioPlayer(contentsOf: url)
             swell?.volume = Design.swellVolume
+        }
+        if let url = Bundle.main.url(forResource: "intro", withExtension: "m4a",
+                                     subdirectory: "Audio") {
+            intro = try? AVAudioPlayer(contentsOf: url)
+            intro?.volume = Design.introAudioVolume
+        }
+    }
+
+    /// The welcome reel's soundtrack. The .aivu ships silent, so its
+    /// audio rides alongside as a plain player, started with playback.
+    func startIntroAudio() {
+        intro?.currentTime = 0
+        intro?.volume = Design.introAudioVolume
+        intro?.play()
+    }
+
+    func stopIntroAudio(over duration: TimeInterval) {
+        guard let intro, intro.isPlaying else { return }
+        intro.setVolume(0, fadeDuration: duration)
+        Task { @MainActor [weak intro] in
+            try? await Task.sleep(for: .seconds(duration))
+            intro?.stop()
         }
     }
 

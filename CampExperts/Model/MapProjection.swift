@@ -16,8 +16,11 @@ import CoreGraphics
 
 enum MapProjection {
 
+    // Wide enough to hold the westernmost camp (Woodward PA, -77.37)
+    // with lens-and-label margin; the drawn coastline only occupies the
+    // eastern half, which reads fine — inland Pennsylvania is dark land.
     static let latRange = 40.35...45.25
-    static let lonRange = (-75.90)...(-67.00)
+    static let lonRange = (-77.90)...(-67.00)
 
     private static let midLat = (latRange.lowerBound + latRange.upperBound) / 2
     private static let midLon = (lonRange.lowerBound + lonRange.upperBound) / 2

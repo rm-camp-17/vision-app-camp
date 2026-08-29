@@ -14,6 +14,14 @@ struct Camp: Identifiable, Hashable, Sendable {
     let latitude: Double
     let longitude: Double
 
+    /// Program identity, verified against each camp's official site.
+    /// Not yet surfaced in the UI; available for filtering and future
+    /// label treatments.
+    let style: String       // "Traditional", "Sports-specialty", "Arts specialty", …
+    let gender: String      // "Co-Ed", "Brother/Sister", "All Girls", "All Boys"
+    let religion: String    // "None", "Jewish", "Nondenominational", …
+    let sessions: String    // "Full summer", "Session-based", …
+
     /// The small, muted, flat proxy loop for the map lens.
     /// Never the immersive master — wrong projection, three orders of
     /// magnitude too heavy for a thumbnail.

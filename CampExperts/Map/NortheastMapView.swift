@@ -41,13 +41,6 @@ struct NortheastMapView: View {
         }
         .frame(width: MapProjection.canvasSize.width,
                height: MapProjection.canvasSize.height)
-        .overlay(alignment: .bottomTrailing) {
-            Text("THE CAMP EXPERTS")
-                .font(.system(size: 26, weight: .medium))
-                .tracking(7)
-                .foregroundStyle(Design.wordmark)
-                .padding(44)
-        }
         .opacity(model.mapVisible ? 1 : 0)
         .animation(.easeInOut(duration: model.mapVisible ? 1.3 : Design.mapDim),
                    value: model.mapVisible)
