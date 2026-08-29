@@ -132,7 +132,13 @@ enum Design {
     static let line = Color(red: 0.72, green: 0.82, blue: 0.88)
     static let labelPrimary = Color.white.opacity(0.88)
     static let labelSecondary = Color.white.opacity(0.50)
-    static let wordmark = Color.white.opacity(0.30)
+    /// Ghost state names on the map — true ground, never figure.
+    static let stateName = line.opacity(0.20)
+
+    /// The one warm color in a cold room: Camp Experts amber, reserved
+    /// for the chosen thing — the focused lens ring, the card's edge,
+    /// the waiting ember. Never used ambiently.
+    static let ember = Color(red: 1.0, green: 0.63, blue: 0.11)
 
     // MARK: - Sound
 

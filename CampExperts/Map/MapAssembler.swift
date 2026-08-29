@@ -22,6 +22,7 @@ final class SceneAnchors {
     let shell = Entity()
     var lensRoots: [String: Entity] = [:]
     var lensDiscs: [String: ModelEntity] = [:]
+    var lensRings: [String: ModelEntity] = [:]
     var homeTransforms: [String: Transform] = [:]
 }
 
@@ -84,6 +85,7 @@ enum MapAssembler {
                                 loops: loops, attachments: attachments)
             anchors.lensRoots[camp.id] = lens.root
             anchors.lensDiscs[camp.id] = lens.disc
+            anchors.lensRings[camp.id] = lens.ring
             anchors.homeTransforms[camp.id] = lens.root.transform
             anchors.mapRoot.addChild(lens.root)
         }
@@ -152,11 +154,24 @@ enum MapAssembler {
                                  at mapPosition: SIMD2<Float>,
                                  loops: ProxyLoopPool,
                                  attachments: RealityViewAttachments)
-    -> (root: Entity, disc: ModelEntity) {
+    -> (root: Entity, disc: ModelEntity, ring: ModelEntity) {
 
         let root = Entity()
         root.name = "lensroot.\(camp.id)"
         root.position = SIMD3(mapPosition.x, mapPosition.y, Design.lensLift)
+
+        // The ember ring: the one warm object in a cold room, and only
+        // around the chosen thing. Hidden until focus lights it.
+        let ringRadius = Design.lensRadius * 1.10
+        let ring = ModelEntity(
+            mesh: .generatePlane(width: ringRadius * 2, height: ringRadius * 2,
+                                 cornerRadius: ringRadius),
+            materials: [UnlitMaterial(color: UIColor(
+                red: 1.0, green: 0.63, blue: 0.11, alpha: 1.0))])
+        ring.name = "ring.\(camp.id)"
+        ring.position = SIMD3(0, 0, -0.002)
+        ring.components.set(OpacityComponent(opacity: 0))
+        root.addChild(ring)
 
         let radius = Design.lensRadius
         let mesh = MeshResource.generatePlane(width: radius * 2,
@@ -195,6 +210,6 @@ enum MapAssembler {
             root.addChild(label)
         }
 
-        return (root, disc)
+        return (root, disc, ring)
     }
 }

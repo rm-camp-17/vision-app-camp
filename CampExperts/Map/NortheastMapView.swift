@@ -44,7 +44,7 @@ struct NortheastMapView: View {
             }
 
             for river in CoastlineData.rivers {
-                context.stroke(path(river), with: .color(Design.line.opacity(0.38)), style: stroke(1.1))
+                context.stroke(path(river), with: .color(Design.line.opacity(0.24)), style: stroke(1.1))
             }
 
             for lake in CoastlineData.lakes {
@@ -57,9 +57,9 @@ struct NortheastMapView: View {
             for (name, lat, lon) in CoastlineData.stateLabels {
                 let at = MapProjection.canvasPoint(latitude: lat, longitude: lon)
                 let text = Text(name)
-                    .font(.system(size: 26, weight: .medium))
-                    .kerning(9)
-                    .foregroundStyle(Design.line.opacity(0.28))
+                    .font(.system(size: 22, weight: .medium))
+                    .kerning(8)
+                    .foregroundStyle(Design.stateName)
                 context.draw(context.resolve(text), at: at, anchor: .center)
             }
         }

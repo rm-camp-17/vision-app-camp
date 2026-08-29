@@ -203,6 +203,7 @@ extension AppModel {
         if let chosen = anchors.lensRoots[camp.id],
            let home = anchors.homeTransforms[camp.id] {
             chosen.fade(to: 1, duration: Design.focusMove)
+            anchors.lensRings[camp.id]?.fade(to: 0.7, duration: Design.focusMove)
             let spot = anchors.mapRoot.convert(position: Design.lensFocusPoint,
                                                from: nil)
             var target = home
@@ -245,6 +246,7 @@ extension AppModel {
                 to: home, relativeTo: anchors.mapRoot,
                 duration: Design.focusMove, timingFunction: .easeInOut)
         }
+        anchors.lensRings[camp.id]?.fade(to: 0, duration: Design.focusMove)
         let resting: Float = (browseMode == .attributes) ? 0.08 : 1.0
         for (_, lens) in anchors.lensRoots {
             lens.fade(to: resting, duration: Design.focusMove)
@@ -310,6 +312,7 @@ extension AppModel {
         if let home = anchors.homeTransforms[camp.id] {
             anchors.lensRoots[camp.id]?.transform = home   // reset while hidden
         }
+        anchors.lensRings[camp.id]?.components.set(OpacityComponent(opacity: 0))
 
         try? await Task.sleep(for: .seconds(Design.darkHold))
 

@@ -44,19 +44,20 @@ struct CampFocusCard: View {
                             .font(.system(size: 21, weight: .semibold))
                             .tracking(2.0)
                             .foregroundStyle(Design.labelPrimary)
-                        Text("PINCH ANYWHERE ELSE FOR THE MAP")
-                            .font(.system(size: 14, weight: .medium))
-                            .tracking(2.2)
+                        Text("PINCH AWAY FOR THE MAP")
+                            .font(.system(size: 15, weight: .medium))
+                            .tracking(3.0)
                             .foregroundStyle(Design.labelSecondary)
                     }
                     .padding(.top, 4)
                 }
                 .padding(.horizontal, 44)
                 .padding(.vertical, 32)
-                .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 30))
+                .background(.black.opacity(0.30), in: RoundedRectangle(cornerRadius: 30))
+                .glassBackgroundEffect(in: .rect(cornerRadius: 30))
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
-                        .stroke(Design.labelSecondary.opacity(0.25), lineWidth: 1))
+                        .stroke(Design.ember.opacity(0.35), lineWidth: 1))
                 .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
         }
@@ -68,6 +69,8 @@ struct CampFocusCard: View {
         Text(label)
             .font(.system(size: 16, weight: .medium))
             .foregroundStyle(Design.labelPrimary.opacity(0.9))
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
             .background(Design.labelSecondary.opacity(0.16), in: Capsule())

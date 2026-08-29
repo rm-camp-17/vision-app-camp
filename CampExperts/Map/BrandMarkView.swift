@@ -44,13 +44,14 @@ struct BrandMarkView: View {
                 }
                 .allowsHitTesting(false)
             } else {
+                // The waiting ember is the one warm thing in the dark.
                 Text(isAttract
                      ? "TAP YOUR THUMB AND FINGER TOGETHER TO BEGIN"
                      : "LOOK AT A CAMP — TAP YOUR THUMB AND FINGER TOGETHER TO VISIT")
                     .font(.system(size: 17, weight: .medium))
                     .tracking(4)
-                    .foregroundStyle(Design.labelSecondary)
-                    .opacity(isAttract ? 1 : 1)
+                    .foregroundStyle(isAttract ? AnyShapeStyle(Design.ember.opacity(0.85))
+                                               : AnyShapeStyle(Design.labelSecondary))
                     .allowsHitTesting(false)
 
                 // The browse toggle: geography is home; the second view

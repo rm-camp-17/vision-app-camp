@@ -119,10 +119,10 @@ enum CoastlineData {
         ("MAINE",         45.02, -69.30),
         ("NEW HAMPSHIRE", 44.65, -71.42),
         ("VERMONT",       44.45, -72.60),
-        ("MASSACHUSETTS", 42.36, -72.10),
+        ("MASSACHUSETTS", 42.33, -70.35),
         ("CONNECTICUT",   41.63, -72.55),
         ("NEW YORK",      42.85, -75.60),
-        ("PENNSYLVANIA",  41.05, -76.55),
-        ("NEW JERSEY",    40.55, -74.55),
+        ("PENNSYLVANIA",  41.00, -77.05),
+        ("NEW JERSEY",    40.44, -74.30),
     ]
 }

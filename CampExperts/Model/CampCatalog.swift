@@ -62,7 +62,7 @@ enum CampCatalog {
              style: "Traditional",      gender: "All Girls",      religion: "Jewish traditions", sessions: "Full summer; half sessions"),
         Camp(id: "windsor",         name: "Windsor Mountain",          place: "Windsor, New Hampshire",      latitude: 43.1149, longitude: -72.0151,
              style: "Traditional international", gender: "Co-Ed", religion: "None",   sessions: "2–8 week sessions"),
-        Camp(id: "woodward",        name: "Woodward PA",               place: "Woodward, Pennsylvania",      latitude: 40.9018, longitude: -77.3684,
+        Camp(id: "woodward",        name: "Camp Woodward",               place: "Woodward, Pennsylvania",      latitude: 40.9018, longitude: -77.3684,
              style: "Action sports",    gender: "Co-Ed",          religion: "None",   sessions: "Weekly sessions"),
     ]
 
