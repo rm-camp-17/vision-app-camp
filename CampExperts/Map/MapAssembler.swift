@@ -90,16 +90,26 @@ enum MapAssembler {
             anchors.mapRoot.addChild(lens.root)
         }
 
-        // Invisible sphere enclosing the visitor. Pinches that miss every
-        // lens land here NO MATTER WHERE THEY'RE LOOKING — sky, water,
-        // over a shoulder. (A flat far wall only covered ~±57°; inside a
-        // 180° film, pinches at the sky fell into nothing — a trap for a
-        // first-timer who was just told "pinch to come back".)
+        // Invisible room enclosing the visitor: six thin walls of a big
+        // box, so a pinch lands NO MATTER WHERE THEY'RE LOOKING — sky,
+        // water, over a shoulder. Walls, not a solid volume: a gaze ray
+        // that STARTS inside a collision shape resolves to it at zero
+        // distance, swallowing every lens and button in front of it.
+        // (And a flat far wall only covered ~±57°; inside a 180° film,
+        // sky-pinches fell into nothing.)
         anchors.shell.name = "shell"
         anchors.shell.position = SIMD3(0, 1.4, 0)
         anchors.shell.components.set(InputTargetComponent())
+        let r: Float = 8, t: Float = 0.1, s: Float = 16.2
         anchors.shell.components.set(CollisionComponent(
-            shapes: [.generateSphere(radius: 8)],
+            shapes: [
+                .generateBox(width: s, height: s, depth: t).offsetBy(translation: SIMD3(0, 0, -r)),
+                .generateBox(width: s, height: s, depth: t).offsetBy(translation: SIMD3(0, 0, r)),
+                .generateBox(width: t, height: s, depth: s).offsetBy(translation: SIMD3(-r, 0, 0)),
+                .generateBox(width: t, height: s, depth: s).offsetBy(translation: SIMD3(r, 0, 0)),
+                .generateBox(width: s, height: t, depth: s).offsetBy(translation: SIMD3(0, -r, 0)),
+                .generateBox(width: s, height: t, depth: s).offsetBy(translation: SIMD3(0, r, 0)),
+            ],
             isStatic: true))
         anchors.root.addChild(anchors.shell)
 

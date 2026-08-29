@@ -265,6 +265,9 @@ extension AppModel {
         focusTimeoutTask?.cancel()
         focusedCamp = nil
         focusIsSuggestion = false
+        // Whatever view chose this camp, the return lands on the map —
+        // geography is where "you are here" makes sense after a visit.
+        browseMode = .geography
         phase = .transporting(camp)
         idle.cancel()
         Task { await crossThreshold(to: camp, countsAsVisit: countsAsVisit) }
