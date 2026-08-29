@@ -21,11 +21,10 @@ struct BrandMarkView: View {
                 .font(.system(size: 44, weight: .semibold))
                 .tracking(14)
                 .foregroundStyle(Design.labelPrimary)
-            Text("LOOK AT A CAMP  ·  PINCH TO VISIT")
+            Text(isAttract ? "PINCH TO BEGIN" : "LOOK AT A CAMP  ·  PINCH TO VISIT")
                 .font(.system(size: 17, weight: .medium))
                 .tracking(4)
                 .foregroundStyle(Design.labelSecondary)
-                .opacity(isAttract ? 0 : 1)
         }
         .multilineTextAlignment(.center)
         .frame(width: 900)
