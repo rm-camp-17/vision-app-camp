@@ -51,11 +51,29 @@ enum MapAssembler {
             anchors.mapRoot.addChild(brand)
         }
 
-        // The focus card hangs below the swelled lens, world-anchored so
-        // it never tilts with the map.
+        // The focus card hangs just below the swelled lens — high enough
+        // to stay inside the comfortable downward-gaze zone, leaned
+        // gently toward the eye so its type is never foreshortened.
         if let card = attachments.entity(for: "focuscard") {
-            card.position = SIMD3(0, 1.02, -1.10)
+            card.position = SIMD3(0, 1.20, -1.10)
+            card.orientation = simd_quatf(angle: -0.24, axis: SIMD3(1, 0, 0))
             anchors.root.addChild(card)
+        }
+
+        // The attribute-browse panel lives on the map plane, slightly
+        // prouder than the canvas so it never z-fights the geography it
+        // replaces.
+        if let panel = attachments.entity(for: "browsepanel") {
+            panel.position = SIMD3(0, 0, Design.lensLift + 0.012)
+            anchors.mapRoot.addChild(panel)
+        }
+
+        // Transient gesture hints: one over the reel, one inside films.
+        // World-anchored low center, where captions live.
+        if let hint = attachments.entity(for: "gesturehint") {
+            hint.position = SIMD3(0, 0.92, -1.45)
+            hint.orientation = simd_quatf(angle: -0.18, axis: SIMD3(1, 0, 0))
+            anchors.root.addChild(hint)
         }
 
         let placed = separatedPositions(for: catalog)
@@ -70,14 +88,16 @@ enum MapAssembler {
             anchors.mapRoot.addChild(lens.root)
         }
 
-        // Invisible far wall behind the map. Pinches that miss every lens
-        // land here: on the map they re-arm the idle clock; during a visit
-        // they begin the return.
+        // Invisible sphere enclosing the visitor. Pinches that miss every
+        // lens land here NO MATTER WHERE THEY'RE LOOKING — sky, water,
+        // over a shoulder. (A flat far wall only covered ~±57°; inside a
+        // 180° film, pinches at the sky fell into nothing — a trap for a
+        // first-timer who was just told "pinch to come back".)
         anchors.shell.name = "shell"
-        anchors.shell.position = SIMD3(0, 1.4, -4.5)
+        anchors.shell.position = SIMD3(0, 1.4, 0)
         anchors.shell.components.set(InputTargetComponent())
         anchors.shell.components.set(CollisionComponent(
-            shapes: [.generateBox(width: 14, height: 9, depth: 0.1)],
+            shapes: [.generateSphere(radius: 8)],
             isStatic: true))
         anchors.root.addChild(anchors.shell)
 
@@ -95,6 +115,11 @@ enum MapAssembler {
             MapProjection.position(latitude: $0.latitude, longitude: $0.longitude)
         }
         let minD = Design.lensMinSeparation
+        let halfW = Design.mapWidth / 2 - Design.lensRadius
+        let halfH = MapProjection.mapHeight / 2 - Design.lensRadius
+        func clamp(_ p: SIMD2<Float>) -> SIMD2<Float> {
+            SIMD2(min(max(p.x, -halfW), halfW), min(max(p.y, -halfH), halfH))
+        }
         for _ in 0..<200 {
             var moved = false
             for i in positions.indices {
@@ -106,19 +131,19 @@ enum MapAssembler {
                     }
                     guard dist < minD else { continue }
                     let push = (minD - dist) / 2 * (delta / dist)
-                    positions[i] -= push
-                    positions[j] += push
+                    // Clamp inside the loop, so an edge-clamped pair is
+                    // re-separated on the next pass instead of being
+                    // silently squashed back together at the border.
+                    positions[i] = clamp(positions[i] - push)
+                    positions[j] = clamp(positions[j] + push)
                     moved = true
                 }
             }
             if !moved { break }
         }
-        let halfW = Design.mapWidth / 2 - Design.lensRadius
-        let halfH = MapProjection.mapHeight / 2 - Design.lensRadius
         var out: [String: SIMD2<Float>] = [:]
         for (camp, p) in zip(catalog, positions) {
-            out[camp.id] = SIMD2(min(max(p.x, -halfW), halfW),
-                                 min(max(p.y, -halfH), halfH))
+            out[camp.id] = clamp(p)
         }
         return out
     }

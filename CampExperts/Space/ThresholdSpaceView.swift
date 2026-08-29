@@ -33,6 +33,12 @@ struct ThresholdSpaceView: View {
             Attachment(id: "focuscard") {
                 CampFocusCard()
             }
+            Attachment(id: "browsepanel") {
+                CampBrowsePanel()
+            }
+            Attachment(id: "gesturehint") {
+                GestureHintView()
+            }
             ForEach(CampCatalog.all) { camp in
                 Attachment(id: camp.id) {
                     CampLensLabel(camp: camp)

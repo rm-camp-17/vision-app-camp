@@ -26,6 +26,7 @@ final class AppModel {
         case intro            // the welcome reel is playing
         case map
         case focused(Camp)    // one camp swelled forward, card showing
+        case farewell         // the goodbye beat after the last visit
         case transporting(Camp)
         case visiting(Camp)
         case returning
@@ -43,7 +44,25 @@ final class AppModel {
     /// The camp currently presented on the focus card (drives the card's
     /// SwiftUI content and visibility).
     var focusedCamp: Camp?
+    /// True while the focused camp is the space's own idle suggestion
+    /// rather than the guest's pick — a silent suggestion enters on its
+    /// own; a silent guest pick folds home.
+    var focusIsSuggestion = false
     @ObservationIgnored var focusTimeoutTask: Task<Void, Never>?
+
+    /// How the map presents itself: placed in geography, or grouped by
+    /// the traits parents shop by. Geography is the default; every new
+    /// guest starts there.
+    enum BrowseMode { case geography, attributes }
+    var browseMode: BrowseMode = .geography
+
+    /// Names of the camps this guest actually visited, for the farewell.
+    var visitedCampNames: [String] = []
+
+    /// Transient gesture coaching (the only interface a first-timer
+    /// needs): taught during the reel, offered again inside a film.
+    var introHintVisible = false
+    var filmHintVisible = false
 
     // The Canvas map and the labels live in SwiftUI attachment views;
     // driving their visibility from observable state keeps those fades in
@@ -60,8 +79,11 @@ final class AppModel {
     var visitStartedAt: Date?
 
     init() {
+        // The space suggests, it never ambushes: an idle pick runs the
+        // same swell-and-card presentation a guest's own pinch would,
+        // and only enters if the silence continues.
         idle.onChoose = { [weak self] camp in
-            self?.beginTransport(to: camp)
+            self?.suggestCamp(camp)
         }
     }
 
@@ -167,7 +189,7 @@ final class AppModel {
             }
         } else {
             switch phase {
-            case .map, .focused, .visiting, .intro:
+            case .map, .focused, .visiting, .intro, .returning, .farewell:
                 resetForNextGuest()
             default:
                 break

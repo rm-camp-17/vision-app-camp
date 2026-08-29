@@ -29,6 +29,8 @@
 		B00000000000000000000023 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000023 /* Assets.xcassets */; };
 		B00000000000000000000022 /* BrandMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000022 /* BrandMarkView.swift */; };
 		B00000000000000000000024 /* CampFocusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000024 /* CampFocusCard.swift */; };
+		B00000000000000000000026 /* GestureHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000026 /* GestureHintView.swift */; };
+		B00000000000000000000025 /* CampBrowsePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000025 /* CampBrowsePanel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,8 @@
 		F00000000000000000000023 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F00000000000000000000022 /* BrandMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandMarkView.swift; sourceTree = "<group>"; };
 		F00000000000000000000024 /* CampFocusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampFocusCard.swift; sourceTree = "<group>"; };
+		F00000000000000000000026 /* GestureHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureHintView.swift; sourceTree = "<group>"; };
+		F00000000000000000000025 /* CampBrowsePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampBrowsePanel.swift; sourceTree = "<group>"; };
 		F00000000000000000000021 /* CampExperts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampExperts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -125,6 +129,8 @@
 				F00000000000000000000010 /* MapAssembler.swift */,
 				F00000000000000000000022 /* BrandMarkView.swift */,
 				F00000000000000000000024 /* CampFocusCard.swift */,
+				F00000000000000000000026 /* GestureHintView.swift */,
+				F00000000000000000000025 /* CampBrowsePanel.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -278,6 +284,8 @@
 				B00000000000000000000010 /* MapAssembler.swift in Sources */,
 				B00000000000000000000022 /* BrandMarkView.swift in Sources */,
 				B00000000000000000000024 /* CampFocusCard.swift in Sources */,
+				B00000000000000000000026 /* GestureHintView.swift in Sources */,
+				B00000000000000000000025 /* CampBrowsePanel.swift in Sources */,
 				B00000000000000000000011 /* ProxyLoopPool.swift in Sources */,
 				B00000000000000000000012 /* ImmersivePlayer.swift in Sources */,
 				B00000000000000000000013 /* ThresholdSpaceView.swift in Sources */,

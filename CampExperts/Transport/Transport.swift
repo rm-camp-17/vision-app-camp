@@ -49,6 +49,16 @@ extension AppModel {
         // The reel is delivered silent; its soundtrack rides alongside.
         ambience.startIntroAudio()
         playerEntity.fade(to: 1, duration: Design.introFade)
+
+        // Gesture school, disguised as a skip button: the first pinch a
+        // guest ever makes is rewarded with visible control.
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Design.introHintAt))
+            guard let self, case .intro = self.phase else { return }
+            self.introHintVisible = true
+            try? await Task.sleep(for: .seconds(Design.hintLinger))
+            self.introHintVisible = false
+        }
     }
 
     /// The reel ended (or a settled guest pinched past it): fade down,
@@ -57,6 +67,7 @@ extension AppModel {
         flowLog.info("finishIntro from \(String(describing: self.phase))")
         guard case .intro = phase else { return }
         introStartedAt = nil
+        introHintVisible = false
         Task {
             aiv.entity?.fade(to: 0, duration: Design.introFade)
             ambience.stopIntroAudio(over: Design.introFade)
@@ -95,6 +106,26 @@ extension AppModel {
         idle.arm()
     }
 
+    // MARK: - Browse mode: geography, or the traits parents shop by
+
+    /// Swap the map's presentation. Geography is the resting default;
+    /// the attribute view dims the geography to a backdrop and raises
+    /// the grouped lists. Both feed the same focus flow.
+    func setBrowseMode(_ mode: BrowseMode) {
+        guard browseMode != mode, let anchors else { return }
+        if case .focused = phase { unfocus() }
+        guard case .map = phase else { return }
+        flowLog.info("browse mode: \(String(describing: mode))")
+        browseMode = mode
+
+        let lensTarget: Float = (mode == .attributes) ? 0.08 : 1.0
+        for (_, lens) in anchors.lensRoots {
+            lens.fade(to: lensTarget, duration: 0.5)
+        }
+        labelsVisible = (mode == .geography)
+        idle.arm()
+    }
+
     // MARK: - Reset: the space goes quiet for the next family
 
     /// After the last visit of a guest's journey (or the headset coming
@@ -103,9 +134,14 @@ extension AppModel {
     func resetForNextGuest() {
         guard let anchors else { return }
         visitsThisGuest = 0
+        visitedCampNames = []
         introStartedAt = nil
         focusTimeoutTask?.cancel()
         focusedCamp = nil
+        focusIsSuggestion = false
+        introHintVisible = false
+        filmHintVisible = false
+        browseMode = .geography
         idle.cancel()
         aiv.teardown()
 
@@ -127,10 +163,18 @@ extension AppModel {
 
     // MARK: - Focus: the pause before the plunge
 
+    /// The idle clock's pick arrives as a suggestion: same presentation,
+    /// but staying silent lets the space carry you in (and that visit
+    /// doesn't count against the guest's three).
+    func suggestCamp(_ camp: Camp) {
+        guard case .map = phase else { return }
+        focusCamp(camp, asSuggestion: true)
+    }
+
     /// Swell one camp toward the visitor and present its card. The rest
     /// of the map recedes but stays present — this is consideration, not
     /// commitment.
-    func focusCamp(_ camp: Camp) {
+    func focusCamp(_ camp: Camp, asSuggestion: Bool = false) {
         guard let anchors else { return }
         switch phase {
         case .map, .focused: break
@@ -145,13 +189,16 @@ extension AppModel {
                 duration: Design.focusMove, timingFunction: .easeInOut)
         }
 
-        flowLog.info("focus \(camp.id)")
+        flowLog.info("focus \(camp.id) suggestion=\(asSuggestion)")
         phase = .focused(camp)
         focusedCamp = camp
+        focusIsSuggestion = asSuggestion
         idle.cancel()
 
+        let restingDim: Float = (browseMode == .attributes)
+            ? 0.08 : Design.focusDimOpacity
         for (id, lens) in anchors.lensRoots where id != camp.id {
-            lens.fade(to: Design.focusDimOpacity, duration: Design.focusMove)
+            lens.fade(to: restingDim, duration: Design.focusMove)
         }
         if let chosen = anchors.lensRoots[camp.id],
            let home = anchors.homeTransforms[camp.id] {
@@ -165,14 +212,22 @@ extension AppModel {
                         duration: Design.focusMove, timingFunction: .easeInOut)
         }
 
-        // A focused camp left alone folds back into the map on its own.
+        // A guest's own pick left alone folds home; the space's
+        // suggestion left alone carries the guest in — the card's
+        // "pinch anywhere else" line is the standing invitation to
+        // decline either.
+        let dwell = asSuggestion ? Design.suggestionDwell : Design.focusTimeout
         focusTimeoutTask?.cancel()
         focusTimeoutTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(Design.focusTimeout))
+            try? await Task.sleep(for: .seconds(dwell))
             guard !Task.isCancelled, let self,
                   case .focused(let held) = self.phase, held.id == camp.id
             else { return }
-            self.unfocus()
+            if self.focusIsSuggestion {
+                self.beginTransport(to: camp, countsAsVisit: false)
+            } else {
+                self.unfocus()
+            }
         }
     }
 
@@ -182,6 +237,7 @@ extension AppModel {
         flowLog.info("unfocus")
         focusTimeoutTask?.cancel()
         focusedCamp = nil
+        focusIsSuggestion = false
         phase = .map
 
         if let home = anchors.homeTransforms[camp.id] {
@@ -189,15 +245,16 @@ extension AppModel {
                 to: home, relativeTo: anchors.mapRoot,
                 duration: Design.focusMove, timingFunction: .easeInOut)
         }
+        let resting: Float = (browseMode == .attributes) ? 0.08 : 1.0
         for (_, lens) in anchors.lensRoots {
-            lens.fade(to: 1, duration: Design.focusMove)
+            lens.fade(to: resting, duration: Design.focusMove)
         }
         idle.arm()
     }
 
     // MARK: - The crossing: map dissolves, place opens
 
-    func beginTransport(to camp: Camp) {
+    func beginTransport(to camp: Camp, countsAsVisit: Bool = true) {
         switch phase {
         case .map, .focused: break
         default: return
@@ -205,13 +262,14 @@ extension AppModel {
         guard anchors != nil else { return }
         focusTimeoutTask?.cancel()
         focusedCamp = nil
+        focusIsSuggestion = false
         phase = .transporting(camp)
         idle.cancel()
-        Task { await crossThreshold(to: camp) }
+        Task { await crossThreshold(to: camp, countsAsVisit: countsAsVisit) }
     }
 
-    private func crossThreshold(to camp: Camp) async {
-        flowLog.info("crossing to \(camp.id)")
+    private func crossThreshold(to camp: Camp, countsAsVisit: Bool) async {
+        flowLog.info("crossing to \(camp.id) counts=\(countsAsVisit)")
         guard let anchors else { return }
 
         // Prepare the destination immediately. The file is local, so by the
@@ -270,8 +328,21 @@ extension AppModel {
         aiv.play()
         playerEntity.fade(to: 1, duration: Design.sceneBloom)
         visitStartedAt = Date()
-        visitsThisGuest += 1
+        // The space's own suggestions don't spend the guest's visits.
+        if countsAsVisit {
+            visitsThisGuest += 1
+            visitedCampNames.append(camp.name)
+        }
         phase = .visiting(camp)
+
+        // The only interface a film needs, briefly: the way home.
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Design.filmHintAt))
+            guard let self, case .visiting = self.phase else { return }
+            self.filmHintVisible = true
+            try? await Task.sleep(for: .seconds(Design.hintLinger))
+            self.filmHintVisible = false
+        }
     }
 
     // MARK: - The return: back to the map, exactly as it was left
@@ -279,6 +350,7 @@ extension AppModel {
     func beginReturn() {
         guard case .visiting(let camp) = phase else { return }
         flowLog.info("returning from \(camp.id)")
+        filmHintVisible = false
         phase = .returning
         Task { await returnToMap(from: camp) }
     }
@@ -290,20 +362,40 @@ extension AppModel {
 
         try? await Task.sleep(for: .seconds(Design.darkHold))
 
-        // The last visit of this guest's journey ends the session: the
-        // space goes dark and waits for the next family instead of
-        // reopening the map.
+        // The last visit of this guest's journey ends with a goodbye,
+        // not a blackout: the wordmark holds with the camps they saw,
+        // then the space quiets for the next family.
         if visitsThisGuest >= Design.visitsPerGuest {
-            resetForNextGuest()
+            await farewell()
             return
         }
         await restoreMap(around: camp)
+    }
+
+    /// The goodbye beat: dark stage, the brand and the guest's three
+    /// camps, a nudge back to the humans at the booth.
+    private func farewell() async {
+        guard let anchors else { return }
+        flowLog.info("farewell: \(self.visitedCampNames.joined(separator: ", "))")
+        anchors.mapRoot.isEnabled = true   // the brand mark lives on it
+        mapVisible = false
+        labelsVisible = false
+        phase = .farewell
+        try? await Task.sleep(for: .seconds(Design.farewellHold))
+        guard case .farewell = phase else { return }
+        resetForNextGuest()
     }
 
     /// Bring the map back rippling outward from the camp just visited —
     /// the room remembers where you went.
     private func restoreMap(around camp: Camp) async {
         guard let anchors else { return }
+        // A reset (doff, menu reopen) may have claimed the stage while
+        // the return was mid-flight.
+        switch phase {
+        case .attract, .boot, .intro, .farewell: return
+        default: break
+        }
 
         anchors.mapRoot.isEnabled = true
         loops.playAll()

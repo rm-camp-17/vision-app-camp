@@ -65,9 +65,12 @@ struct NortheastMapView: View {
         }
         .frame(width: MapProjection.canvasSize.width,
                height: MapProjection.canvasSize.height)
-        .opacity(model.mapVisible ? 1 : 0)
+        // In attribute-browse mode the geography recedes to a backdrop.
+        .opacity(model.mapVisible
+                 ? (model.browseMode == .geography ? 1 : 0.12) : 0)
         .animation(.easeInOut(duration: model.mapVisible ? 1.3 : Design.mapDim),
                    value: model.mapVisible)
+        .animation(.easeInOut(duration: 0.5), value: model.browseMode)
         .allowsHitTesting(false)
     }
 

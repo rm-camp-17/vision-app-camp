@@ -39,11 +39,17 @@ struct CampFocusCard: View {
                         chip(camp.sessions)
                     }
 
-                    Text("PINCH THE CAMP TO STEP INSIDE   ·   PINCH ANYWHERE ELSE FOR THE MAP")
-                        .font(.system(size: 14, weight: .medium))
-                        .tracking(2.4)
-                        .foregroundStyle(Design.labelSecondary.opacity(0.85))
-                        .padding(.top, 2)
+                    VStack(spacing: 6) {
+                        Text("PINCH IT AGAIN TO GO INSIDE")
+                            .font(.system(size: 21, weight: .semibold))
+                            .tracking(2.0)
+                            .foregroundStyle(Design.labelPrimary)
+                        Text("PINCH ANYWHERE ELSE FOR THE MAP")
+                            .font(.system(size: 14, weight: .medium))
+                            .tracking(2.2)
+                            .foregroundStyle(Design.labelSecondary)
+                    }
+                    .padding(.top, 4)
                 }
                 .padding(.horizontal, 44)
                 .padding(.vertical, 32)

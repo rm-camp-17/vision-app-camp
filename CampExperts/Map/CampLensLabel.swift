@@ -32,9 +32,10 @@ struct CampLensLabel: View {
         }
         .multilineTextAlignment(.center)
         .frame(width: 250)
-        // Hidden while this camp is focused — the swelled lens would
-        // dwarf it, and the card carries the identity instead.
-        .opacity(model.labelsVisible && model.focusedCamp?.id != camp.id ? 1 : 0)
+        // Hidden while this camp is focused (the card carries the
+        // identity) and in attribute-browse mode (the panel does).
+        .opacity(model.labelsVisible && model.browseMode == .geography
+                 && model.focusedCamp?.id != camp.id ? 1 : 0)
         .animation(.easeInOut(duration: 0.5), value: model.labelsVisible)
         .animation(.easeInOut(duration: 0.3), value: model.focusedCamp)
         .allowsHitTesting(false)
