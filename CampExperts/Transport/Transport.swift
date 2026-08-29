@@ -255,6 +255,10 @@ extension AppModel {
 
         try? await Task.sleep(for: .seconds(Design.darkHold))
 
+        // A menu-reopen restart may have reset the journey while this
+        // crossing was mid-flight; the fresh welcome owns the stage now.
+        guard case .transporting = phase else { return }
+
         guard let playerEntity else {
             // No media for this camp yet — surface the map again rather
             // than strand a family in the dark.

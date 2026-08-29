@@ -73,10 +73,24 @@ final class AppModel {
         Task { await bootIn() }
     }
 
+    /// The space was dismissed (menu, crown). Its whole entity graph is
+    /// gone; a reopen builds a new one and hands it to `sceneReady`.
+    /// Forget everything scene-bound so that path boots the journey
+    /// fresh — a booth reopens on the welcome, never on someone else's
+    /// moment.
     func sceneClosed() {
         idle.cancel()
+        focusTimeoutTask?.cancel()
         loops.pauseAll()
         aiv.teardown()
+        ambience.stopIntroAudio(over: 0.1)
+        focusedCamp = nil
+        visitsThisGuest = 0
+        introStartedAt = nil
+        mapVisible = false
+        labelsVisible = false
+        anchors = nil
+        phase = .boot
     }
 
     // MARK: - Input
@@ -138,7 +152,19 @@ final class AppModel {
     /// the `.attract` check in the operator flow.)
     func scenePhaseChanged(isActive: Bool) {
         if isActive {
-            if case .attract = phase { beginIntro() }
+            switch phase {
+            case .attract:
+                beginIntro()
+            case .boot:
+                break   // first launch; bootIn owns the opening
+            default:
+                // Reopened from the menu (or resumed after a suspension
+                // that never delivered the inactive callback): a booth
+                // never resumes someone else's moment. Fresh welcome.
+                flowLog.info("reactivated mid-journey; restarting from the welcome")
+                resetForNextGuest()
+                beginIntro()
+            }
         } else {
             switch phase {
             case .map, .focused, .visiting, .intro:
