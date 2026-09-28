@@ -30,12 +30,25 @@ struct Camp: Identifiable, Hashable, Sendable {
                         subdirectory: "CampMedia/\(id)")
     }
 
-    /// The Apple Immersive Video master (.aivu). Falls back to a flat
-    /// master.mov, then to the proxy loop, so the core journey stays
-    /// demonstrable before real footage lands.
+    /// The Apple Immersive Video master (.aivu). On device the masters
+    /// live in the app's Documents container (copied one film at a time
+    /// by scripts/sync_media.sh, so a 50 GB library survives interrupted
+    /// transfers and weekly reinstalls); the bundle copy is the simulator
+    /// path. Falls back to a flat master.mov, then to the proxy loop, so
+    /// the journey stays demonstrable while films are still syncing.
     var masterURL: URL? {
-        Bundle.main.url(forResource: "master", withExtension: "aivu",
-                        subdirectory: "CampMedia/\(id)")
+        if let docs = FileManager.default.urls(for: .documentDirectory,
+                                               in: .userDomainMask).first {
+            let folder = docs.appending(path: "CampMedia/\(id)")
+            // The sync writes master.ok only after the film lands whole;
+            // without it, a transfer cut off mid-film would look playable.
+            let complete = folder.appending(path: "master.ok")
+            if FileManager.default.fileExists(atPath: complete.path(percentEncoded: false)) {
+                return folder.appending(path: "master.aivu")
+            }
+        }
+        return Bundle.main.url(forResource: "master", withExtension: "aivu",
+                               subdirectory: "CampMedia/\(id)")
             ?? Bundle.main.url(forResource: "master", withExtension: "mov",
                                subdirectory: "CampMedia/\(id)")
             ?? loopURL

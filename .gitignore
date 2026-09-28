@@ -20,3 +20,7 @@ CampExperts/Resources/Audio/*.wav
 
 # Proxy loop staging cut from the drive masters (regenerate: see docs)
 ProxyStaging/
+.gstack/
+
+# device build output and film-sync state
+build-device/
