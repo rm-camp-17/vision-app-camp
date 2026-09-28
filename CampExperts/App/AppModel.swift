@@ -101,6 +101,8 @@ final class AppModel {
     /// needs): taught during the reel, offered again inside a film.
     var introHintVisible = false
     var filmHintVisible = false
+    /// The welcome reel's SKIP button (appears after the grace period).
+    var skipVisible = false
 
     // The Canvas map and the labels live in SwiftUI attachment views;
     // driving their visibility from observable state keeps those fades in
@@ -148,7 +150,6 @@ final class AppModel {
         focusTimeoutTask?.cancel()
         loops.pauseAll()
         aiv.teardown()
-        ambience.stopIntroAudio(over: 0.1)
         focusedCamp = nil
         visitsThisGuest = 0
         introStartedAt = nil
@@ -184,12 +185,10 @@ final class AppModel {
             // A guest is here (or an operator is testing): wake up.
             beginIntro()
         case .intro:
-            // A deliberate pinch skips the reel — but not in the first
-            // moments, so a stray confirm never robs the welcome.
-            guard let started = introStartedAt,
-                  Date().timeIntervalSince(started) > Design.introSkipGrace
-            else { return }
-            finishIntro()
+            // A pinch anywhere does NOT skip the reel — new guests pinch
+            // while finding their hands. It re-shows the hint pointing at
+            // the SKIP button, the only way past.
+            showIntroHint()
         case .map:
             // A person is here and browsing; give them the full clock.
             idle.arm()
@@ -204,6 +203,13 @@ final class AppModel {
         default:
             break
         }
+    }
+
+    /// The SKIP button on the welcome reel.
+    func skipIntro() {
+        guard case .intro = phase else { return }
+        trace("intro skipped via SKIP button")
+        finishIntro()
     }
 
     // MARK: - Headset on / off

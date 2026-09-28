@@ -16,7 +16,7 @@ import QuartzCore
 final class HeadTracker {
 
     private let session = ARKitSession()
-    private let world = WorldTrackingProvider()
+    private var world = WorldTrackingProvider()
 
     func start() async {
         guard WorldTrackingProvider.isSupported else { return }
@@ -25,6 +25,14 @@ final class HeadTracker {
         } catch {
             trace("world tracking failed to start: \(error.localizedDescription)")
         }
+    }
+
+    /// After the headset comes off and goes back on, tracking resumes by
+    /// itself; if the provider was stopped outright, start a fresh one.
+    func ensureRunning() async {
+        guard WorldTrackingProvider.isSupported, world.state == .stopped else { return }
+        world = WorldTrackingProvider()
+        await start()
     }
 
     /// Eye height above the floor, in meters.

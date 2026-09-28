@@ -32,7 +32,10 @@ extension AppModel {
         trace("beginIntro from \(String(describing: self.phase))")
         guard phase == .boot || phase == .attract, anchors != nil else { return }
 
-        let playerEntity = aiv.makeEntity(for: CampCatalog.intro) { [weak self] in
+        let soundtrack = Bundle.main.url(forResource: "intro", withExtension: "m4a",
+                                         subdirectory: "Audio")
+        let playerEntity = aiv.makeEntity(for: CampCatalog.intro,
+                                          soundtrack: soundtrack) { [weak self] in
             self?.finishIntro()
         }
         guard let playerEntity, let anchors else {
@@ -43,12 +46,12 @@ extension AppModel {
 
         phase = .intro
         introStartedAt = Date()
-        levelStage()
+        Task { await levelStageWhenTracking() }
         ambience.duckBed()
         anchors.playerHost.addChild(playerEntity)
-        aiv.play()
-        // The reel is delivered silent; its soundtrack rides alongside.
-        ambience.startIntroAudio()
+        // The reel is delivered silent; its soundtrack rides alongside,
+        // released on the same host-clock instant as the picture.
+        Task { await aiv.play() }
         playerEntity.fade(to: 1, duration: Design.introFade)
 
         // Gesture school, disguised as a skip button: the first pinch a
@@ -56,9 +59,23 @@ extension AppModel {
         Task { [weak self] in
             try? await Task.sleep(for: .seconds(Design.introHintAt))
             guard let self, case .intro = self.phase else { return }
-            self.introHintVisible = true
+            self.skipVisible = true
+            self.showIntroHint()
+        }
+    }
+
+    /// Show the look-at-SKIP lesson for a few seconds (and reveal SKIP
+    /// if the grace period has passed).
+    func showIntroHint() {
+        guard case .intro = phase else { return }
+        if let started = introStartedAt,
+           Date().timeIntervalSince(started) >= Design.introHintAt {
+            skipVisible = true
+        }
+        introHintVisible = true
+        Task { [weak self] in
             try? await Task.sleep(for: .seconds(Design.hintLinger))
-            self.introHintVisible = false
+            self?.introHintVisible = false
         }
     }
 
@@ -69,10 +86,10 @@ extension AppModel {
         guard case .intro = phase else { return }
         introStartedAt = nil
         introHintVisible = false
+        skipVisible = false
         Task {
             aiv.entity?.fade(to: 0, duration: Design.introFade)
-            ambience.stopIntroAudio(over: Design.introFade)
-            try? await Task.sleep(for: .seconds(Design.introFade))
+            await aiv.fadeOutAudio(over: Design.introFade)
             aiv.teardown()
             try? await Task.sleep(for: .seconds(Design.darkHold))
             await bootMapIn()
@@ -114,10 +131,25 @@ extension AppModel {
     /// this guest's eyes. Only ever called while the stage is dark or
     /// about to fade in, so the move is never seen.
     func levelStage() {
-        guard let anchors, let eye = head.eyeHeight() else { return }
+        guard let anchors else { return }
+        guard let eye = head.eyeHeight() else {
+            trace("stage NOT leveled: tracking not running yet")
+            return
+        }
         let clamped = min(max(eye, 0.9), 2.0)
         anchors.stage.position.y = clamped - Design.designEyeHeight
         trace("stage leveled: eye \(String(format: "%.2f", eye)) m")
+    }
+
+    /// A guest just put the headset on: tracking needs a moment to resume,
+    /// so keep asking for up to 3 s before leveling to THIS guest's eyes.
+    func levelStageWhenTracking() async {
+        await head.ensureRunning()
+        for _ in 0..<20 {
+            if head.eyeHeight() != nil { levelStage(); return }
+            try? await Task.sleep(for: .milliseconds(150))
+        }
+        trace("stage NOT leveled after 3 s: tracking never resumed")
     }
 
     // MARK: - Browse mode: geography, or the traits parents shop by
@@ -155,6 +187,7 @@ extension AppModel {
         focusIsSuggestion = false
         introHintVisible = false
         filmHintVisible = false
+        skipVisible = false
         browseMode = .geography
         lang = .en
         idle.cancel()
@@ -170,7 +203,6 @@ extension AppModel {
         }
         loops.pauseAll()
         ambience.duckBed()
-        ambience.stopIntroAudio(over: 0.3)
         // mapRoot stays enabled: the brand mark keeps a faint ember
         // presence during attract. Phase guards make lenses inert.
         phase = .attract
@@ -347,7 +379,7 @@ extension AppModel {
 
         trace("playing \(camp.masterURL?.path(percentEncoded: false) ?? "nil"); available memory \(availableMemoryMB) MB")
         anchors.playerHost.addChild(playerEntity)
-        aiv.play()
+        Task { await aiv.play() }
         playerEntity.fade(to: 1, duration: Design.sceneBloom)
         trace("player added and playing")
         visitStartedAt = Date()

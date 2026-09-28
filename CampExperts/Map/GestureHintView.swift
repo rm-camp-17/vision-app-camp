@@ -16,16 +16,39 @@ struct GestureHintView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
-        Group {
-            if model.introHintVisible {
-                caption(Loc.skipHint(model.lang))
-            } else if model.filmHintVisible {
-                caption(Loc.returnHint(model.lang))
+        VStack(spacing: 16) {
+            Group {
+                if model.introHintVisible {
+                    caption(Loc.skipHint(model.lang))
+                } else if model.filmHintVisible {
+                    caption(Loc.returnHint(model.lang))
+                }
+            }
+            .allowsHitTesting(false)
+
+            // The only way past the welcome reel: a deliberate look-and-pinch
+            // on this button. Stray pinches (a new guest finding their hands)
+            // do nothing, so every family sees the reel.
+            if model.skipVisible && model.phase == .intro {
+                Button { model.skipIntro() } label: {
+                    Text(Loc.skipButton(model.lang))
+                        .font(.system(size: 22, weight: .semibold))
+                        .tracking(3)
+                        .foregroundStyle(Design.labelPrimary)
+                        .padding(.horizontal, 34)
+                        .padding(.vertical, 16)
+                        .background(.black.opacity(0.55), in: Capsule())
+                        .overlay(Capsule().stroke(Design.ember.opacity(0.5), lineWidth: 1))
+                        .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .hoverEffect()
+                .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.7),
                    value: model.introHintVisible || model.filmHintVisible)
-        .allowsHitTesting(false)
+        .animation(.easeInOut(duration: 0.7), value: model.skipVisible)
     }
 
     private func caption(_ text: String) -> some View {

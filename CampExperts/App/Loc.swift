@@ -43,8 +43,11 @@ enum Loc {
     // MARK: - Gesture hints
 
     static func skipHint(_ l: Lang) -> String {
-        l == .fr ? "ESSAYEZ — TOUCHEZ POUCE ET INDEX POUR PASSER LA SUITE"
-                 : "TRY IT — TAP YOUR THUMB AND FINGER TOGETHER TO SKIP AHEAD"
+        l == .fr ? "ESSAYEZ — REGARDEZ « PASSER », PUIS TOUCHEZ POUCE ET INDEX"
+                 : "TRY IT — LOOK AT SKIP, THEN TAP YOUR THUMB AND FINGER TOGETHER"
+    }
+    static func skipButton(_ l: Lang) -> String {
+        l == .fr ? "PASSER  ›" : "SKIP  ›"
     }
     static func returnHint(_ l: Lang) -> String {
         l == .fr ? "TOUCHEZ POUCE ET INDEX À TOUT MOMENT POUR REVENIR"
