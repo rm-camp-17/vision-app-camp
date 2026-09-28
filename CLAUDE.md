@@ -7,13 +7,26 @@ Camp identity (names, coordinates, media folder ids): `CampExperts/Model/CampCat
 
 ## Build & run from the CLI
 
-**On Riley's Mac use `./scripts/manual_build.sh run`** — it compiles with
-swiftc and assembles the bundle by hand, because PC Matic endpoint
-security wedges xcodebuild's SWBBuildService (spawned toolchain probes
-hang forever in a never-drained pipe; xcodebuild waits at "Create build
-description" with 0% CPU). The same swiftc toolchain runs fine from a
-shell. If PC Matic is ever properly tamed (verify: xcodebuild reaches
-SwiftCompile within a minute), the standard path below works too.
+**On Riley's Mac use `./scripts/manual_build.sh run`** (simulator) and
+**`./scripts/device_build.sh install` + `./scripts/sync_media.sh`**
+(Vision Pro). Both compile with swiftc and assemble the bundle by hand.
+
+Why: xcodebuild and the Xcode GUI hang forever at "ExecuteExternalTool
+clang -v -E -dM … -c /dev/null" (0% CPU; the clang is blocked in
+`write()`). Root cause is NOT PC Matic (that was a wrong guess): macOS's
+pipe-buffer memory is nearly exhausted on this long-uptime Mac (ChatGPT's
+`codex` app-server was the largest holder), so new pipes get 512-byte
+buffers and the probe's ~20 KB of output deadlocks against Swift Build's
+reader. Check with a nonblocking-write probe (healthy = 16–64 KB before
+EAGAIN; broken = 512). A real restart resets it, after which the standard
+path below works.
+
+Device installs: the app ships slim (52 MB, loops + audio). The 23 films
+go into the app's Documents container via `sync_media.sh`, one at a time,
+each finalized with a `master.ok` marker the app requires before playing.
+Films survive reinstalls; the free-tier profile expires weekly, and only
+the 52 MB app needs reinstalling then. If a devicectl install seems to
+hang, check `lsof` for CoreDeviceService still streaming an old transfer.
 
 Booth-flow diagnostics (note `--info` — the flow log is info level):
 
@@ -23,7 +36,7 @@ xcrun simctl spawn booted log show --info --last 5m \
 ```
 
 ```sh
-# Standard path (blocked by PC Matic on this machine — see above)
+# Standard path (hangs on this Mac until a real restart — see above)
 xcodebuild -project CampExperts.xcodeproj -scheme CampExperts \
   -destination 'platform=visionOS Simulator,name=Apple Vision Pro' \
   -derivedDataPath build build
