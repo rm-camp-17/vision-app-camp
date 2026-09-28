@@ -21,12 +21,20 @@ reader. Check with a nonblocking-write probe (healthy = 16–64 KB before
 EAGAIN; broken = 512). A real restart resets it, after which the standard
 path below works.
 
-Device installs: the app ships slim (52 MB, loops + audio). The 23 films
-go into the app's Documents container via `sync_media.sh`, one at a time,
-each finalized with a `master.ok` marker the app requires before playing.
-Films survive reinstalls; the free-tier profile expires weekly, and only
-the 52 MB app needs reinstalling then. If a devicectl install seems to
-hang, check `lsof` for CoreDeviceService still streaming an old transfer.
+Device installs: the app ships slim (52 MB, loops + audio); reinstall it
+weekly (free-tier profile) with `./scripts/device_build.sh install`. Films
+go separately and survive reinstalls: `scripts/sync_media.sh` sends each
+in 256 MB parts to `Documents/CampMedia/<id>/incoming/<bytes>/`, ready
+flag last; the app (MediaLibrary.swift) stitches complete films on launch
+and on headset-on, stamping `master.ok` with the byte count. A LaunchAgent
+(`scripts/install_sync_agent.sh`, log in `build-device/sync/agent.log`)
+runs a pass every 5 minutes. `sync_media.sh status` shows what's on the
+headset; `sync_media.sh <id>` force re-sends one film; replacing a master
+on the Mac re-sends just that film automatically.
+
+NEVER use devicectl's `--remove-existing-content`: it wipes the app's
+entire Documents folder, not the named subfolder. Killing a devicectl
+client doesn't stop CoreDeviceService's transfer — restart that service.
 
 Booth-flow diagnostics (note `--info` — the flow log is info level):
 
