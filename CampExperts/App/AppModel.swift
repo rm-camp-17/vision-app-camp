@@ -16,6 +16,40 @@ import os
 /// Booth diagnostics: `log stream --predicate 'subsystem == "com.campexperts.threshold"'`
 let flowLog = Logger(subsystem: "com.campexperts.threshold", category: "flow")
 
+/// Flow events that must survive the app disappearing: each line goes to
+/// the system log AND to Documents/trace.log, which the Mac pulls back with
+/// `devicectl device copy from --source Documents/trace.log`.
+func trace(_ message: String) {
+    flowLog.info("\(message, privacy: .public)")
+    TraceFile.append(message)
+}
+
+enum TraceFile {
+    private static let queue = DispatchQueue(label: "com.campexperts.trace")
+    private static let url = FileManager.default
+        .urls(for: .documentDirectory, in: .userDomainMask)[0]
+        .appending(path: "trace.log")
+
+    static func append(_ message: String) {
+        let now = Date()
+        queue.async {
+            let stamp = now.formatted(.dateTime.hour(.twoDigits(amPM: .omitted))
+                .minute(.twoDigits).second(.twoDigits).secondFraction(.fractional(3)))
+            let line = Data("\(stamp)  \(message)\n".utf8)
+            if let handle = try? FileHandle(forWritingTo: url) {
+                _ = try? handle.seekToEnd()
+                try? handle.write(contentsOf: line)
+                try? handle.close()
+            } else {
+                try? line.write(to: url)
+            }
+        }
+    }
+}
+
+/// Memory this process can still allocate before the system steps in.
+var availableMemoryMB: Int { Int(os_proc_available_memory() / 1_048_576) }
+
 @MainActor
 @Observable
 final class AppModel {
@@ -97,6 +131,7 @@ final class AppModel {
     func sceneReady(_ anchors: SceneAnchors) {
         guard self.anchors == nil else { return }
         self.anchors = anchors
+        trace("scene ready; available memory \(availableMemoryMB) MB")
         Task { await head.start() }
         MediaLibrary.assembleDeliveredFilms()
         Task { await bootIn() }
@@ -108,6 +143,7 @@ final class AppModel {
     /// fresh — a booth reopens on the welcome, never on someone else's
     /// moment.
     func sceneClosed() {
+        trace("SCENE CLOSED (immersive space dismissed) in phase \(String(describing: phase))")
         idle.cancel()
         focusTimeoutTask?.cancel()
         loops.pauseAll()
@@ -180,6 +216,7 @@ final class AppModel {
     /// first; the subsequent deactivation-reset is caught on re-don via
     /// the `.attract` check in the operator flow.)
     func scenePhaseChanged(isActive: Bool) {
+        trace("scenePhase active=\(isActive) in phase \(String(describing: phase))")
         if isActive {
             // Films that finished arriving since the last guest.
             MediaLibrary.assembleDeliveredFilms()
@@ -192,7 +229,7 @@ final class AppModel {
                 // Reopened from the menu (or resumed after a suspension
                 // that never delivered the inactive callback): a booth
                 // never resumes someone else's moment. Fresh welcome.
-                flowLog.info("reactivated mid-journey; restarting from the welcome")
+                trace("reactivated mid-journey; restarting from the welcome")
                 resetForNextGuest()
                 beginIntro()
             }

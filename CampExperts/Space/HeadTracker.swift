@@ -23,7 +23,7 @@ final class HeadTracker {
         do {
             try await session.run([world])
         } catch {
-            flowLog.error("world tracking failed to start: \(error.localizedDescription, privacy: .public)")
+            trace("world tracking failed to start: \(error.localizedDescription)")
         }
     }
 

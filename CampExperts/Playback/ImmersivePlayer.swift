@@ -18,6 +18,8 @@ final class ImmersivePlayer {
     private(set) var entity: Entity?
     private var player: AVPlayer?
     private var endObserver: NSObjectProtocol?
+    private var failObserver: NSObjectProtocol?
+    private var statusObservation: NSKeyValueObservation?
 
     /// Builds the playback entity for a camp. The entity carries a
     /// VideoPlayerComponent in progressive immersive viewing mode: on
@@ -61,6 +63,19 @@ final class ImmersivePlayer {
             Task { @MainActor in onFinish() }
         }
 
+        // Diagnostics: the player's verdict on the file, and any failure.
+        let label = "\(camp.id)/\(url.lastPathComponent)"
+        statusObservation = item.observe(\.status, options: [.new]) { item, _ in
+            let status = ["unknown", "readyToPlay", "failed"][min(item.status.rawValue, 2)]
+            trace("player item \(label): \(status)\(item.error.map { " — \($0.localizedDescription)" } ?? "")")
+        }
+        failObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemFailedToPlayToEndTime, object: item, queue: .main
+        ) { note in
+            let err = note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? Error
+            trace("player item \(label) FAILED mid-play: \(err?.localizedDescription ?? "unknown")")
+        }
+
         self.player = player
         self.entity = entity
         return entity
@@ -85,7 +100,12 @@ final class ImmersivePlayer {
         if let endObserver {
             NotificationCenter.default.removeObserver(endObserver)
         }
+        if let failObserver {
+            NotificationCenter.default.removeObserver(failObserver)
+        }
         endObserver = nil
+        failObserver = nil
+        statusObservation = nil
         player?.pause()
         player = nil
         entity?.removeFromParent()

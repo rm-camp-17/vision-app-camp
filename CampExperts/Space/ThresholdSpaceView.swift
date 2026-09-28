@@ -50,7 +50,7 @@ struct ThresholdSpaceView: View {
                 .targetedToAnyEntity()
                 .onEnded { value in
                     let name = value.entity.name
-                    flowLog.info("tap on entity '\(name, privacy: .public)'")
+                    trace("tap on entity '\(name)'")
                     if name.hasPrefix("lens.") {
                         model.lensTapped(id: String(name.dropFirst("lens.".count)))
                     } else {

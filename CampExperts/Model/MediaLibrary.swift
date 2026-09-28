@@ -59,10 +59,11 @@ enum MediaLibrary {
                 let total = parts.reduce(Int64(0)) { $0 + size(of: batch.appending(path: $1)) }
                 guard parts.count == count, total == expected else { continue }
 
+                trace("stitching \(camp.lastPathComponent) (\(parts.count) parts); available memory \(availableMemoryMB) MB")
                 if stitch(parts.map { batch.appending(path: $0) }, into: camp, bytes: expected) {
                     // Also clears any stale, half-delivered older batch.
                     try? fm.removeItem(at: incoming)
-                    flowLog.info("assembled film \(camp.lastPathComponent, privacy: .public)")
+                    trace("assembled film \(camp.lastPathComponent)")
                     break
                 }
             }
@@ -82,8 +83,18 @@ enum MediaLibrary {
             for part in parts {
                 let input = try FileHandle(forReadingFrom: part)
                 defer { try? input.close() }
-                while let chunk = try input.read(upToCount: 8 << 20), !chunk.isEmpty {
-                    try out.write(contentsOf: chunk)
+                // Drain each 8 MB chunk immediately: without a pool per
+                // chunk, a long stitch keeps every chunk alive at once
+                // (gigabytes) until the whole film is done.
+                var more = true
+                while more {
+                    try autoreleasepool {
+                        if let chunk = try input.read(upToCount: 8 << 20), !chunk.isEmpty {
+                            try out.write(contentsOf: chunk)
+                        } else {
+                            more = false
+                        }
+                    }
                 }
             }
             try out.close()
@@ -98,7 +109,7 @@ enum MediaLibrary {
         } catch {
             try? out.close()
             try? fm.removeItem(at: working)
-            flowLog.error("assembling \(camp.lastPathComponent, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
+            trace("assembling \(camp.lastPathComponent) failed: \(error.localizedDescription)")
             return false
         }
     }

@@ -18,7 +18,7 @@ extension AppModel {
 
     func bootIn() async {
         ambience.startBed()
-        flowLog.info("bootIn: anchors ready, lenses=\(self.anchors?.lensRoots.count ?? -1)")
+        trace("bootIn: anchors ready, lenses=\(self.anchors?.lensRoots.count ?? -1)")
         try? await Task.sleep(for: .seconds(Design.bootBeat))
         beginIntro()
     }
@@ -29,7 +29,7 @@ extension AppModel {
     /// intro media isn't bundled, the map opens directly — the intro is
     /// optional like every other asset.
     func beginIntro() {
-        flowLog.info("beginIntro from \(String(describing: self.phase))")
+        trace("beginIntro from \(String(describing: self.phase))")
         guard phase == .boot || phase == .attract, anchors != nil else { return }
 
         let playerEntity = aiv.makeEntity(for: CampCatalog.intro) { [weak self] in
@@ -65,7 +65,7 @@ extension AppModel {
     /// The reel ended (or a settled guest pinched past it): fade down,
     /// hold the dark, open the map.
     func finishIntro() {
-        flowLog.info("finishIntro from \(String(describing: self.phase))")
+        trace("finishIntro from \(String(describing: self.phase))")
         guard case .intro = phase else { return }
         introStartedAt = nil
         introHintVisible = false
@@ -82,7 +82,7 @@ extension AppModel {
     // MARK: - The map arrives
 
     private func bootMapIn() async {
-        flowLog.info("bootMapIn")
+        trace("bootMapIn")
         guard let anchors else { return }
         levelStage()
         anchors.mapRoot.isEnabled = true
@@ -104,7 +104,7 @@ extension AppModel {
         try? await Task.sleep(for: .seconds(0.4))
         labelsVisible = true
         phase = .map
-        flowLog.info("map phase reached; mapVisible=\(self.mapVisible)")
+        trace("map phase reached; mapVisible=\(self.mapVisible)")
         idle.arm()
     }
 
@@ -117,7 +117,7 @@ extension AppModel {
         guard let anchors, let eye = head.eyeHeight() else { return }
         let clamped = min(max(eye, 0.9), 2.0)
         anchors.stage.position.y = clamped - Design.designEyeHeight
-        flowLog.info("stage leveled: eye \(eye, format: .fixed(precision: 2)) m")
+        trace("stage leveled: eye \(String(format: "%.2f", eye)) m")
     }
 
     // MARK: - Browse mode: geography, or the traits parents shop by
@@ -129,7 +129,7 @@ extension AppModel {
         guard browseMode != mode, let anchors else { return }
         if case .focused = phase { unfocus() }
         guard case .map = phase else { return }
-        flowLog.info("browse mode: \(String(describing: mode))")
+        trace("browse mode: \(String(describing: mode))")
         browseMode = mode
 
         let lensTarget: Float = (mode == .attributes) ? 0.08 : 1.0
@@ -204,7 +204,7 @@ extension AppModel {
                 duration: Design.focusMove, timingFunction: .easeInOut)
         }
 
-        flowLog.info("focus \(camp.id) suggestion=\(asSuggestion)")
+        trace("focus \(camp.id) suggestion=\(asSuggestion)")
         phase = .focused(camp)
         focusedCamp = camp
         focusIsSuggestion = asSuggestion
@@ -250,7 +250,7 @@ extension AppModel {
     /// "Not this one": the lens sails home, the map breathes back.
     func unfocus() {
         guard case .focused(let camp) = phase, let anchors else { return }
-        flowLog.info("unfocus")
+        trace("unfocus")
         focusTimeoutTask?.cancel()
         focusedCamp = nil
         focusIsSuggestion = false
@@ -289,7 +289,7 @@ extension AppModel {
     }
 
     private func crossThreshold(to camp: Camp, countsAsVisit: Bool) async {
-        flowLog.info("crossing to \(camp.id) counts=\(countsAsVisit)")
+        trace("crossing to \(camp.id) counts=\(countsAsVisit)")
         guard let anchors else { return }
 
         // Prepare the destination immediately. The file is local, so by the
@@ -345,9 +345,11 @@ extension AppModel {
             return
         }
 
+        trace("playing \(camp.masterURL?.path(percentEncoded: false) ?? "nil"); available memory \(availableMemoryMB) MB")
         anchors.playerHost.addChild(playerEntity)
         aiv.play()
         playerEntity.fade(to: 1, duration: Design.sceneBloom)
+        trace("player added and playing")
         visitStartedAt = Date()
         // The space's own suggestions don't spend the guest's visits.
         if countsAsVisit {
@@ -370,7 +372,7 @@ extension AppModel {
 
     func beginReturn() {
         guard case .visiting(let camp) = phase else { return }
-        flowLog.info("returning from \(camp.id)")
+        trace("returning from \(camp.id)")
         filmHintVisible = false
         phase = .returning
         Task { await returnToMap(from: camp) }
@@ -397,7 +399,7 @@ extension AppModel {
     /// camps, a nudge back to the humans at the booth.
     private func farewell() async {
         guard let anchors else { return }
-        flowLog.info("farewell: \(self.visitedCampNames.joined(separator: ", "))")
+        trace("farewell: \(self.visitedCampNames.joined(separator: ", "))")
         anchors.mapRoot.isEnabled = true   // the brand mark lives on it
         mapVisible = false
         labelsVisible = false
