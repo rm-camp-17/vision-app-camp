@@ -12,11 +12,18 @@ enum Design {
 
     // MARK: - Stage geometry (meters, space origin is the floor under the visitor)
 
-    /// Center of the map in the room.
-    static let mapCenter = SIMD3<Float>(0, 1.41, -1.55)
+    /// Every stage position below is authored for this eye height. When
+    /// the map appears, the whole stage shifts so this line lands on the
+    /// guest's actual eyes — seated adults, kids, and tall standing adults
+    /// all get the same view instead of a map pinned to the floor.
+    static let designEyeHeight: Float = 1.60
 
-    /// The map leans back like a drafting table, top edge away from the visitor.
-    static let mapTiltRadians: Float = -0.31   // ~18 degrees
+    /// Center of the map: a comfortable 28 cm below the eyes, 1.3 m out.
+    static let mapCenter = SIMD3<Float>(0, 1.32, -1.30)
+
+    /// Tilted exactly enough to face the eye squarely (atan(drop/distance),
+    /// about 12°) — never leaning away.
+    static let mapTiltRadians: Float = -atan2(Float(0.28), Float(1.30))
 
     /// Width of the mapped region; height follows from the projection.
     static let mapWidth: Float = 1.45
@@ -39,7 +46,7 @@ enum Design {
     /// toward the visitor and a card presents the camp. A second pinch on
     /// the lens enters; a pinch anywhere else returns to the map. Big
     /// targets and an explicit confirm forgive first-wear eye calibration.
-    static let lensFocusPoint = SIMD3<Float>(0, 1.42, -1.10)
+    static let lensFocusPoint = SIMD3<Float>(0, 1.42, -1.05)
     static let lensFocusScale: Float = 2.6
     static let focusMove: TimeInterval = 0.45
     /// How far the rest of the map recedes while something is focused.

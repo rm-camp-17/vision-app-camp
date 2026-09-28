@@ -43,6 +43,7 @@ extension AppModel {
 
         phase = .intro
         introStartedAt = Date()
+        levelStage()
         ambience.duckBed()
         anchors.playerHost.addChild(playerEntity)
         aiv.play()
@@ -83,6 +84,7 @@ extension AppModel {
     private func bootMapIn() async {
         flowLog.info("bootMapIn")
         guard let anchors else { return }
+        levelStage()
         anchors.mapRoot.isEnabled = true
         ambience.liftBed()
         mapVisible = true   // the coastline breathes in
@@ -104,6 +106,18 @@ extension AppModel {
         phase = .map
         flowLog.info("map phase reached; mapVisible=\(self.mapVisible)")
         idle.arm()
+    }
+
+    // MARK: - Eye level
+
+    /// Shift the whole browsing stage so its authored eye line sits at
+    /// this guest's eyes. Only ever called while the stage is dark or
+    /// about to fade in, so the move is never seen.
+    func levelStage() {
+        guard let anchors, let eye = head.eyeHeight() else { return }
+        let clamped = min(max(eye, 0.9), 2.0)
+        anchors.stage.position.y = clamped - Design.designEyeHeight
+        flowLog.info("stage leveled: eye \(eye, format: .fixed(precision: 2)) m")
     }
 
     // MARK: - Browse mode: geography, or the traits parents shop by
@@ -206,7 +220,7 @@ extension AppModel {
             chosen.fade(to: 1, duration: Design.focusMove)
             anchors.lensRings[camp.id]?.fade(to: 0.7, duration: Design.focusMove)
             let spot = anchors.mapRoot.convert(position: Design.lensFocusPoint,
-                                               from: nil)
+                                               from: anchors.stage)
             var target = home
             target.translation = spot
             target.scale = SIMD3(repeating: Design.lensFocusScale)
@@ -297,7 +311,7 @@ extension AppModel {
         // The chosen lens comes to meet you.
         if let chosen = anchors.lensRoots[camp.id] {
             let approach = anchors.mapRoot.convert(position: Design.lensApproachPoint,
-                                                   from: nil)
+                                                   from: anchors.stage)
             var target = chosen.transform
             target.translation = approach
             target.scale = SIMD3(repeating: Design.lensApproachScale)
@@ -403,6 +417,7 @@ extension AppModel {
         case .attract, .boot, .intro, .farewell: return
         default: break
         }
+        levelStage()   // the guest may have sat down or stood up mid-film
 
         anchors.mapRoot.isEnabled = true
         loops.playAll()

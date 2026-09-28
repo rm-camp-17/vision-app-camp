@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Background film sync for the Camp Experts Vision Pro app.
+  Every 5 minutes (while this Mac is awake): if the headset is reachable
+  and a film is missing or changed, send it. Otherwise exits in seconds.
+  Installed by scripts/install_sync_agent.sh; remove with --uninstall.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.campexperts.filmsync</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>__REPO__/scripts/sync_media.sh</string>
+    <string>--agent</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>300</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>LimitLoadToSessionType</key>
+  <string>Aqua</string>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>__REPO__/build-device/sync/agent.log</string>
+  <key>StandardErrorPath</key>
+  <string>__REPO__/build-device/sync/agent.log</string>
+</dict>
+</plist>

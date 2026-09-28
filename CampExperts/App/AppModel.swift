@@ -78,6 +78,7 @@ final class AppModel {
     let idle = IdleEngine()
     let ambience = AmbienceEngine()
     let aiv = ImmersivePlayer()
+    let head = HeadTracker()
 
     var anchors: SceneAnchors?
     var visitStartedAt: Date?
@@ -96,6 +97,8 @@ final class AppModel {
     func sceneReady(_ anchors: SceneAnchors) {
         guard self.anchors == nil else { return }
         self.anchors = anchors
+        Task { await head.start() }
+        MediaLibrary.assembleDeliveredFilms()
         Task { await bootIn() }
     }
 
@@ -178,6 +181,8 @@ final class AppModel {
     /// the `.attract` check in the operator flow.)
     func scenePhaseChanged(isActive: Bool) {
         if isActive {
+            // Films that finished arriving since the last guest.
+            MediaLibrary.assembleDeliveredFilms()
             switch phase {
             case .attract:
                 beginIntro()

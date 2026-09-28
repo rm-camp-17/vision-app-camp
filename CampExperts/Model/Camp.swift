@@ -37,14 +37,14 @@ struct Camp: Identifiable, Hashable, Sendable {
     /// path. Falls back to a flat master.mov, then to the proxy loop, so
     /// the journey stays demonstrable while films are still syncing.
     var masterURL: URL? {
-        if let docs = FileManager.default.urls(for: .documentDirectory,
-                                               in: .userDomainMask).first {
-            let folder = docs.appending(path: "CampMedia/\(id)")
-            // The sync writes master.ok only after the film lands whole;
-            // without it, a transfer cut off mid-film would look playable.
-            let complete = folder.appending(path: "master.ok")
-            if FileManager.default.fileExists(atPath: complete.path(percentEncoded: false)) {
-                return folder.appending(path: "master.aivu")
+        if let folder = MediaLibrary.root?.appending(path: id) {
+            // master.ok holds the film's byte count (see MediaLibrary); a
+            // film that doesn't match its stamp is never played.
+            let film = folder.appending(path: "master.aivu")
+            if let stamp = try? String(contentsOf: folder.appending(path: "master.ok"), encoding: .utf8),
+               let expected = Int64(stamp.trimmingCharacters(in: .whitespacesAndNewlines)),
+               MediaLibrary.size(of: film) == expected {
+                return film
             }
         }
         return Bundle.main.url(forResource: "master", withExtension: "aivu",

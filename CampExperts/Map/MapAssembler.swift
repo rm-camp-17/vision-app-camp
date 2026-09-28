@@ -17,6 +17,10 @@ import UIKit
 @MainActor
 final class SceneAnchors {
     let root = Entity()
+    /// Everything a guest looks at while browsing (map, card, hints),
+    /// shifted as one unit to the guest's eye height. The film player
+    /// stays on `root`: immersive video is anchored to the space itself.
+    let stage = Entity()
     let mapRoot = Entity()
     let playerHost = Entity()
     let shell = Entity()
@@ -38,7 +42,8 @@ enum MapAssembler {
         anchors.mapRoot.position = Design.mapCenter
         anchors.mapRoot.orientation = simd_quatf(angle: Design.mapTiltRadians,
                                                  axis: SIMD3(1, 0, 0))
-        anchors.root.addChild(anchors.mapRoot)
+        anchors.root.addChild(anchors.stage)
+        anchors.stage.addChild(anchors.mapRoot)
 
         if let mapCanvas = attachments.entity(for: "map") {
             anchors.mapRoot.addChild(mapCanvas)
@@ -56,9 +61,9 @@ enum MapAssembler {
         // to stay inside the comfortable downward-gaze zone, leaned
         // gently toward the eye so its type is never foreshortened.
         if let card = attachments.entity(for: "focuscard") {
-            card.position = SIMD3(0, 1.20, -1.10)
+            card.position = SIMD3(0, 1.20, -1.05)
             card.orientation = simd_quatf(angle: -0.24, axis: SIMD3(1, 0, 0))
-            anchors.root.addChild(card)
+            anchors.stage.addChild(card)
         }
 
         // The attribute-browse panel lives on the map plane, slightly
@@ -74,7 +79,7 @@ enum MapAssembler {
         if let hint = attachments.entity(for: "gesturehint") {
             hint.position = SIMD3(0, 0.92, -1.45)
             hint.orientation = simd_quatf(angle: -0.18, axis: SIMD3(1, 0, 0))
-            anchors.root.addChild(hint)
+            anchors.stage.addChild(hint)
         }
 
         let placed = separatedPositions(for: catalog)
